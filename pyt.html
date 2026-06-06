@@ -1,0 +1,2364 @@
+
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Mastery Console - Ultimate Edition</title>
+  <meta name="description" content="Platform belajar Python interaktif 6 bulan dengan kurikulum terstruktur, playground, dan pelacakan progres.">
+  <meta name="theme-color" content="#0f172a">
+  
+  <style>
+    /* =========================================
+       1. CSS VARIABLES & THEME CONFIGURATION
+       ========================================= */
+
+       /* Perbaiki container tombol agar sejajar */
+.external-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.external-links .link-btn {
+  width: 100%;
+  text-align: center;
+  padding: 0.7rem 1rem;
+}
+
+.external-links .btn-change {
+  width: 100%;
+  text-align: center;
+}
+
+    :root {
+      /* Warna Dasar (Slate Dark) */
+      --bg-dark: #0f172a;
+      --bg-glass: rgba(30, 41, 59, 0.7);
+      --border-glass: rgba(148, 163, 184, 0.15);
+      
+      /* Warna Aksen Pythonic */
+      --py-blue: #3b82f6;
+      --py-blue-glow: rgba(59, 130, 246, 0.3);
+      --py-yellow: #fbbf24;
+      --py-yellow-glow: rgba(251, 191, 36, 0.3);
+      --emerald: #10b981;
+      --rose: #f43f5e;
+      --amber: #f59e0b;
+      
+      /* Warna Teks */
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      
+      /* Tipografi */
+      --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Fira Code', 'Consolas', 'Monaco', monospace;
+      
+      /* Transisi & Animasi */
+      --transition-fast: 0.2s ease;
+      --transition-smooth: 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+      --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-glow: 0 0 15px var(--py-blue-glow);
+    }
+
+    /* Mode Terang (Light Mode) */
+    [data-theme="light"] {
+      --bg-dark: #f8fafc;
+      --bg-glass: rgba(255, 255, 255, 0.85);
+      --border-glass: rgba(148, 163, 184, 0.2);
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    /* =========================================
+       2. GLOBAL RESET & BASE STYLES
+       ========================================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 15% 20%, rgba(59, 130, 246, 0.1), transparent 50%),
+                  radial-gradient(circle at 85% 80%, rgba(251, 191, 36, 0.08), transparent 50%),
+                  var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+      transition: background 0.4s ease, color 0.4s ease;
+      line-height: 1.6;
+    }
+
+    /* Scrollbar Kustom */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-glass);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--py-blue);
+    }
+
+    /* =========================================
+       3. SIDEBAR & NAVIGATION
+       ========================================= */
+    .sidebar {
+      width: 260px;
+      background: rgba(15, 23, 42, 0.95);
+      border-right: 1px solid var(--border-glass);
+      padding: 2rem 1rem;
+      position: fixed;
+      height: 100vh;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s ease, transform 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    [data-theme="light"] .sidebar {
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .brand {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--py-yellow);
+      margin-bottom: 2.5rem;
+      text-shadow: 0 0 12px var(--py-yellow-glow);
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding-left: 0.5rem;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      flex: 1;
+    }
+
+    .nav-item {
+      padding: 0.9rem 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-weight: 500;
+      transition: var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      border: 1px solid transparent;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      transform: translateX(4px);
+    }
+
+    .nav-item.active {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--py-blue);
+      border-left: 4px solid var(--py-blue);
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+
+    /* =========================================
+       4. MAIN CONTENT AREA
+       ========================================= */
+    .main-content {
+      margin-left: 260px;
+      flex: 1;
+      padding: 2.5rem;
+      max-width: 1280px;
+      transition: margin-left 0.3s ease;
+    }
+
+    .view-container {
+      position: relative;
+      min-height: 70vh;
+    }
+
+    .view {
+      display: none;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: var(--transition-smooth);
+    }
+
+    .view.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .view-header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-glass);
+      padding-bottom: 1rem;
+    }
+
+    .view-title {
+      font-size: 1.8rem;
+      margin-bottom: 0.6rem;
+      background: linear-gradient(90deg, var(--py-blue), var(--emerald));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 800;
+    }
+
+    .view-sub {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 600px;
+    }
+
+    /* =========================================
+       5. STATS & DASHBOARD CARDS
+       ========================================= */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      padding: 1.2rem;
+      border-radius: 14px;
+      backdrop-filter: blur(8px);
+      transition: var(--transition-fast);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--py-blue);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--emerald);
+    }
+
+    /* =========================================
+       6. LEARNING MAP & NODES
+       ========================================= */
+    .learning-map {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 1.2rem;
+      margin: 2.5rem 0;
+    }
+
+    .map-node {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      padding: 1.2rem 1.8rem;
+      border-radius: 12px;
+      text-align: center;
+      transition: var(--transition-fast);
+      width: 160px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .map-node::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--py-blue), var(--py-yellow));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .map-node:hover {
+      transform: translateY(-4px);
+      border-color: var(--py-blue);
+    }
+
+    .map-node:hover::before {
+      transform: scaleX(1);
+    }
+
+    .map-node.active-month {
+      border-color: var(--py-yellow);
+      background: rgba(251, 191, 36, 0.08);
+      box-shadow: 0 0 15px var(--py-yellow-glow);
+    }
+
+    .map-node .icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .map-node .label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+
+    .map-connector {
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--py-blue), transparent);
+      opacity: 0.5;
+    }
+
+    /* =========================================
+       7. SCHEDULE GRID & DAY CARDS
+       ========================================= */
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.5rem;
+    }
+
+    .day-card {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: 12px;
+      padding: 1.2rem;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      position: relative;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .day-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--py-blue);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .day-card.completed::after {
+      content: '✓';
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: #0f172a;
+      background: var(--emerald);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .day-card.type-study { border-left: 4px solid var(--py-blue); }
+    .day-card.type-practice { border-left: 4px solid var(--py-yellow); }
+    .day-card.type-project { border: 2px solid var(--rose); }
+    .day-card.type-review { border-left: 4px solid var(--amber); }
+    .day-card.type-core { border-left: 4px solid var(--emerald); }
+
+    .day-num {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+
+    .day-topic {
+      font-weight: 700;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      color: var(--text-main);
+    }
+
+    .day-type-badge {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-top: 8px;
+      display: inline-block;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-core { background: rgba(16, 185, 129, 0.15); color: var(--emerald); }
+    .badge-study { background: rgba(59, 130, 246, 0.15); color: var(--py-blue); }
+    .badge-practice { background: rgba(251, 191, 36, 0.15); color: var(--py-yellow); }
+    .badge-project { background: rgba(244, 63, 94, 0.15); color: var(--rose); }
+    .badge-review { background: rgba(245, 158, 11, 0.15); color: var(--amber); }
+
+    /* =========================================
+       8. MODAL & LEARNING INTERFACE
+       ========================================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-box {
+      background: #1e293b;
+      border: 1px solid var(--border-glass);
+      width: 100%;
+      max-width: 950px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 16px;
+      padding: 2.5rem;
+      position: relative;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalSlideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    [data-theme="light"] .modal-box {
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: var(--text-muted);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close:hover {
+      background: var(--rose);
+      color: white;
+      transform: rotate(90deg);
+    }
+
+    .step-indicator {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    .step {
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+    }
+
+    .step.active {
+      background: var(--py-blue);
+      color: #fff;
+      border-color: var(--py-blue);
+      font-weight: 600;
+    }
+
+    .mentor-text {
+      line-height: 1.8;
+      color: var(--text-main);
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      white-space: pre-wrap;
+    }
+
+    .code-block {
+      background: #0f172a;
+      border: 1px solid #334155;
+      padding: 1.2rem;
+      border-radius: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      margin-bottom: 1rem;
+      white-space: pre-wrap;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .code-block::before {
+      content: 'PYTHON';
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: var(--py-blue);
+      color: white;
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border-bottom-left-radius: 8px;
+      font-weight: bold;
+    }
+
+    .code-breakdown {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      padding-left: 1.2rem;
+      border-left: 3px solid var(--py-blue);
+      white-space: pre-wrap;
+      background: rgba(59, 130, 246, 0.05);
+      padding: 1rem;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .input-area {
+      width: 100%;
+      min-height: 120px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 1rem;
+      font-family: var(--font-mono);
+      color: var(--text-main);
+      outline: none;
+      resize: vertical;
+      margin-bottom: 0.8rem;
+      transition: var(--transition-fast);
+      font-size: 0.9rem;
+    }
+
+    .input-area:focus {
+      border-color: var(--py-blue);
+      box-shadow: 0 0 0 3px var(--py-blue-glow);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--py-blue), #2563eb);
+      color: #fff;
+      border: none;
+      padding: 0.9rem;
+      width: 100%;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: var(--transition-fast);
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--py-blue-glow);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-change {
+      background: transparent;
+      border: 1px solid var(--emerald);
+      color: var(--emerald);
+      padding: 0.7rem;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 0.8rem;
+      font-size: 0.9rem;
+      width: 100%;
+      transition: var(--transition-fast);
+      font-weight: 600;
+    }
+
+    .btn-change:hover {
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .btn-change:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .feedback {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      min-height: 1.5rem;
+      line-height: 1.5;
+      padding: 0.8rem;
+      border-radius: 8px;
+    }
+
+.feedback {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  min-height: 1.5rem;
+  line-height: 1.6;
+  padding: 1rem 1.2rem;
+  border-radius: 10px;
+  border-left: 4px solid;
+  display: none;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.feedback.success {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.15));
+  border-left-color: #10b981;
+  color: #6ee7b7;
+  display: block;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="light"] .feedback.success {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.1));
+  color: #059669;
+}
+
+.feedback.error {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.15));
+  border-left-color: #ef4444;
+  color: #fca5a5;
+  display: block;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+[data-theme="light"] .feedback.error {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
+  color: #dc2626;
+}
+
+    .external-links {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .link-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: var(--transition-fast);
+      font-weight: 500;
+    }
+
+    .link-btn:hover {
+      border-color: var(--py-blue);
+      color: var(--py-blue);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    /* =========================================
+       9. OUTPUT PANEL & PLAYGROUND
+       ========================================= */
+    .output-panel {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .output-panel .output-line {
+      color: var(--emerald);
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .output-panel .output-line.error {
+      color: var(--rose);
+    }
+
+    .output-panel .output-line.result {
+      color: var(--py-yellow);
+    }
+
+    .output-panel-header {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-bottom: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .playground-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .playground-editor {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 1.2rem;
+      min-height: 450px;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--text-main);
+      outline: none;
+      resize: vertical;
+      width: 100%;
+      transition: var(--transition-fast);
+    }
+
+    .playground-editor:focus {
+      border-color: var(--py-blue);
+    }
+
+    .playground-output {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 1.2rem;
+      min-height: 450px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      overflow-y: auto;
+    }
+
+    /* =========================================
+       10. NOTES, CHARTS & HEATMAP
+       ========================================= */
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.5rem;
+    }
+
+    .note-card {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      padding: 1.2rem;
+      border-radius: 12px;
+      transition: var(--transition-fast);
+    }
+
+    .note-card:hover {
+      border-color: var(--py-yellow);
+    }
+
+    .note-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--py-blue);
+      margin-bottom: 0.6rem;
+      font-weight: 600;
+    }
+
+    .note-body {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    .charts-section {
+      margin: 2.5rem 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .chart-card {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      padding: 1.5rem;
+      border-radius: 14px;
+      backdrop-filter: blur(8px);
+    }
+
+    .chart-title {
+      font-size: 1.1rem;
+      margin-bottom: 1.2rem;
+      color: var(--py-blue);
+      font-weight: 700;
+    }
+
+    .chart-canvas {
+      width: 100%;
+      height: 220px;
+      display: block;
+    }
+
+    .heatmap {
+      display: grid;
+      grid-template-columns: repeat(30, 1fr);
+      gap: 4px;
+      margin-bottom: 1rem;
+    }
+
+    .heatmap-cell {
+      aspect-ratio: 1;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      transition: var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .heatmap-cell.completed {
+      background: var(--emerald);
+    }
+
+    .heatmap-cell.partial {
+      background: rgba(16, 185, 129, 0.4);
+    }
+
+    .heatmap-cell:hover {
+      transform: scale(1.4);
+      z-index: 10;
+      box-shadow: 0 0 8px var(--emerald);
+    }
+
+    .heatmap-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .legend-bar {
+      display: flex;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+    }
+
+    /* =========================================
+       11. MUSIC WIDGET & UTILITIES
+       ========================================= */
+    .music-widget {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      z-index: 80;
+      transition: var(--transition-smooth);
+    }
+
+    .music-minimized {
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--py-blue);
+      cursor: pointer;
+      box-shadow: 0 0 20px var(--py-blue-glow);
+      font-size: 1.4rem;
+      transition: var(--transition-fast);
+    }
+
+    .music-minimized:hover {
+      transform: scale(1.1) rotate(10deg);
+    }
+
+    .music-expanded {
+      width: 300px;
+      background: #1e293b;
+      border: 1px solid var(--border-glass);
+      border-radius: 16px;
+      padding: 1rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .channel-row {
+      display: flex;
+      gap: 0.5rem;
+      margin: 0.8rem 0;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .channel-btn {
+      padding: 0.4rem 0.8rem;
+      border: 1px solid var(--border-glass);
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: var(--transition-fast);
+      font-weight: 500;
+    }
+
+    .channel-btn.active {
+      border-color: var(--py-yellow);
+      color: var(--py-yellow);
+      background: rgba(251, 191, 36, 0.1);
+    }
+
+    .yt-frame {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border-radius: 10px;
+      border: none;
+      margin-top: 0.8rem;
+    }
+
+    .variation-indicator {
+      display: flex;
+      gap: 0.4rem;
+      margin: 0.8rem 0;
+      align-items: center;
+    }
+
+    .var-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: var(--transition-fast);
+    }
+
+    .var-dot.active {
+      background: var(--py-blue);
+      box-shadow: 0 0 8px var(--py-blue);
+      transform: scale(1.2);
+    }
+
+    .var-dot.used {
+      background: var(--py-yellow);
+    }
+
+    .var-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-left: 0.6rem;
+      font-weight: 500;
+    }
+
+    /* =========================================
+       12. RESPONSIVE DESIGN & ANIMATIONS
+       ========================================= */
+    @media (max-width: 1024px) {
+      .charts-section {
+        grid-template-columns: 1fr;
+      }
+      .playground-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 280px;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 1.5rem;
+      }
+      .learning-map {
+        flex-direction: column;
+      }
+      .map-connector {
+        width: 3px;
+        height: 40px;
+        background: linear-gradient(180deg, var(--py-blue), transparent);
+      }
+      .menu-toggle {
+        display: flex !important;
+      }
+    }
+
+    .menu-toggle {
+      position: fixed;
+      top: 1.2rem;
+      left: 1.2rem;
+      z-index: 60;
+      background: var(--py-blue);
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: #fff;
+      box-shadow: 0 4px 12px var(--py-blue-glow);
+    }
+
+    @keyframes pop {
+      0% { transform: translate(0, 0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+    }
+    /* Loading state untuk tombol */
+.btn-primary.loading {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+/* Output line dengan animasi */
+.output-line {
+  animation: fadeInLine 0.3s ease;
+}
+
+@keyframes fadeInLine {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Status indicator */
+#pyodideStatus {
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid var(--py-yellow);
+}
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Menu Toggle -->
+  <button class="menu-toggle" id="mobileMenuBtn" aria-label="Toggle Menu">☰</button>
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar" id="sidebar" role="navigation">
+    <div class="brand">🐍 Python Mastery</div>
+    <ul class="nav-list">
+      <li class="nav-item active" data-target="dashboard" role="button" tabindex="0">
+        <span>🏠</span> Dashboard
+      </li>
+      <li class="nav-item" data-target="schedule" role="button" tabindex="0">
+        <span>📅</span> Jadwal Belajar
+      </li>
+      <li class="nav-item" data-target="notes" role="button" tabindex="0">
+        <span>📚</span> Buku Catatan
+      </li>
+      <li class="nav-item" data-target="playground" role="button" tabindex="0">
+        <span>💻</span> Playground
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <div class="view-container">
+      
+      <!-- Dashboard View -->
+      <section id="view-dashboard" class="view active" aria-labelledby="dashboard-title">
+        <div class="view-header">
+          <h2 class="view-title" id="dashboard-title">🗺️ Peta Perjalanan Belajar Python</h2>
+          <p class="view-sub">Ikuti alur terstruktur dari pemula hingga menjadi Python Developer profesional yang siap kerja.</p>
+        </div>
+        
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Materi Selesai</div>
+            <div class="stat-value" id="statCompleted">0%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Catatan</div>
+            <div class="stat-value" id="statNotes">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Level Rank</div>
+            <div class="stat-value" id="statRank">Newbie 🌱</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Streak Hari</div>
+            <div class="stat-value" id="statStreak">0 🔥</div>
+          </div>
+        </div>
+
+        <div class="learning-map" id="learningMap" role="list"></div>
+        <p style="text-align: center; color: var(--text-muted); margin-top: 1.5rem; font-size: 0.95rem;">
+          Klik salah satu fase di atas untuk mulai belajar 🚀
+        </p>
+
+        <div class="charts-section">
+          <div class="chart-card">
+            <div class="chart-title">📊 Progress per Bulan</div>
+            <canvas id="progressChart" class="chart-canvas"></canvas>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">🔥 Activity Heatmap (180 Hari)</div>
+            <div id="heatmapContainer"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Schedule View -->
+      <section id="view-schedule" class="view" aria-labelledby="schedule-title">
+        <div class="view-header">
+          <h2 class="view-title" id="schedule-title">📅 Jadwal Kurikulum Python</h2>
+          <p class="view-sub">Struktur 6 Bulan: 10 Materi Inti + 7 Studi Kasus + 9 Latihan + 3 Project + 1 Review per bulan.</p>
+        </div>
+        <div class="legend-bar">
+          <span class="legend-item">
+            <span class="legend-color" style="background:var(--emerald);"></span> Materi Inti (Hari 1-10)
+          </span>
+          <span class="legend-item">
+            <span class="legend-color" style="background:var(--py-blue);"></span> Studi Kasus (Hari 11-17)
+          </span>
+          <span class="legend-item">
+            <span class="legend-color" style="background:var(--py-yellow);"></span> Latihan (Hari 18-26)
+          </span>
+          <span class="legend-item">
+            <span class="legend-color" style="background:var(--rose);"></span> Project Akhir (Hari 27-29)
+          </span>
+          <span class="legend-item">
+            <span class="legend-color" style="background:var(--amber);"></span> Review (Hari 30)
+          </span>
+        </div>
+        <div id="scheduleContainer"></div>
+      </section>
+
+      <!-- Notes View -->
+      <section id="view-notes" class="view" aria-labelledby="notes-title">
+        <div class="view-header">
+          <h2 class="view-title" id="notes-title">📚 Buku Catatan Digital</h2>
+          <p class="view-sub">Semua catatan harianmu tersimpan otomatis di browser. Tidak akan hilang saat refresh.</p>
+        </div>
+        <div class="notes-grid" id="notesGrid">
+          <p style="color: var(--text-muted); grid-column: 1/-1; text-align: center; padding: 2rem;">
+            Belum ada catatan. Tulis catatan saat belajar untuk melihatnya di sini!
+          </p>
+        </div>
+      </section>
+
+      <!-- Playground View -->
+      <section id="view-playground" class="view" aria-labelledby="playground-title">
+  <div class="view-header">
+    <h2 class="view-title" id="playground-title"> Code Playground</h2>
+    <p class="view-sub">Area bebas untuk eksperimen kode Python. Python dijalankan langsung di browser menggunakan Pyodide.</p>
+    <div style="margin-top: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
+      <span style="font-size: 0.85rem; color: var(--text-muted);">Status Python:</span>
+      <span id="pyodideStatus" style="font-size: 0.85rem; color: var(--py-yellow); font-weight: 600;">⏳ Memuat...</span>
+    </div>
+  </div>
+        <div class="playground-container">
+          <div>
+            <textarea class="playground-editor" id="playgroundEditor" placeholder="# Tulis kode Python di sini...&#10;print('Hello, World!')" spellcheck="false"></textarea>
+            <button class="btn-primary" id="runPlayground">▶️ Jalankan Kode</button>
+            <button class="btn-change" id="clearPlayground" style="margin-top: 0.8rem;">🗑️ Clear Console</button>
+          </div>
+          <div>
+            <div class="playground-output" id="playgroundOutput">
+              <div class="output-panel-header">📤 Output Console</div>
+              <div id="playgroundOutputContent"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Learning Modal Overlay -->
+  <div class="modal-overlay" id="learnModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <button class="modal-close" id="closeModal" aria-label="Close Modal">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- Music Widget -->
+  <div class="music-widget" id="musicWidget" aria-label="Music Player"></div>
+<script src="https://unpkg.com/pyodide@0.24.1/pyodide.js"></script>
+  <script>
+/* =========================================
+0. INISIALISASI PYTHON (PYODIDE)
+========================================= */
+window.pyodideReady = false;
+window.pyodideInstance = null;
+
+async function initPythonRuntime() {
+    const statusEl = document.getElementById('pyodideStatus');
+    try {
+        if (statusEl) statusEl.textContent = '⏳ Memuat Python Engine...';
+        window.pyodideInstance = await loadPyodide({
+            indexURL: "https://cdn.jsdelivr.net/pyodide/v0.24.1/full/"
+        });
+        window.pyodideReady = true;
+        if (statusEl) {
+            statusEl.textContent = '✅ Python Siap!';
+            statusEl.style.color = 'var(--emerald)';
+            statusEl.style.borderColor = 'var(--emerald)';
+        }
+        console.log("Pyodide loaded successfully");
+    } catch (err) {
+        console.error("Pyodide load failed:", err);
+        if (statusEl) statusEl.textContent = '❌ Gagal memuat Python';
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPythonRuntime);
+} else {
+    initPythonRuntime();
+}
+
+/* =========================================
+1. STATE APLIKASI & KONFIGURASI GLOBAL
+========================================= */
+    const appState = {
+      currentView: 'dashboard',
+      selectedMonth: 1,
+      completedDays: {},
+      dayNotes: {},
+      dayVariationIndex: {},
+      dayAttempts: {},
+      isMusicExpanded: false,
+      currentChannel: 'lofi',
+      startDate: new Date('2026-05-11'),
+      theme: 'dark'
+    };
+    
+    const MAX_VARIATIONS = 5;
+
+    /* =========================================
+       2. DATA MUSIK & CHANNELS
+       ========================================= */
+    const musicChannels = {
+      lofi: { id: 'i06n4tdr5fY', label: '☕ Hits indo' },
+      synth: { id: '4xDzrJKXOOY', label: '🎹 Synthwave' },
+      nature: { id: 'AdTFQymcTrM', label: '🌲 Tiktok Song' },
+      classical: { id: 'X4VbdwhkE10', label: '🎻 lofi' }
+    };
+
+    /* =========================================
+       3. TEMA & METADATA BULAN
+       ========================================= */
+    const monthThemes = [
+      { id: 1, name: 'Fondasi Python', icon: '🟢', desc: 'Variabel, Tipe Data, Operator, Kontrol Alur, List, Dict.' },
+      { id: 2, name: 'Fungsi & Modul', icon: '⚙️', desc: 'Functions, *args/**kwargs, Modules, File I/O, Error Handling.' },
+      { id: 3, name: 'OOP Python', icon: '🏛️', desc: 'Classes, Objects, Inheritance, Polymorphism, Encapsulation.' },
+      { id: 4, name: 'Python Lanjutan', icon: '🚀', desc: 'Decorators, Generators, Context Managers, Type Hinting.' },
+      { id: 5, name: 'Data & Web', icon: '🌐', desc: 'Requests, JSON, Web Scraping Dasar, Pandas Intro, Regex.' },
+      { id: 6, name: 'Framework & Deploy', icon: '🚢', desc: 'Flask/FastAPI Dasar, Database, Testing, Virtual Env, Deploy.' }
+    ];
+
+    /* =========================================
+       4. MATERI INTI (HARI 1-10)
+       ========================================= */
+    const coreMaterials = {
+      1: [
+        { 
+          judul: 'Pengenalan Python & Print',
+          penjelasan: '🎯 Python adalah bahasa pemrograman tingkat tinggi yang mudah dibaca dan serbaguna.\n\nBayangkan:\n• Python = Bahasa yang dimengerti manusia dan mesin\n• Indentasi (spasi) sangat PENTING di Python!\n\n📺 print() adalah perintah dasar untuk menampilkan output ke layar console.',
+          contohKode: '# Ini adalah komentar di Python\nprint("Halo, Dunia!")\nprint("Saya sedang belajar Python")\nprint(42)  # Bisa juga menampilkan angka',
+          bedahKode: '📝 Baris 1: Komentar dimulai dengan tanda pagar (#)\n📝 Baris 2: print() menampilkan teks ke layar\n📝 Baris 4: print() juga bisa menampilkan angka\n💡 Tips: Python tidak memerlukan titik koma (;) di akhir baris!',
+          linkW3: 'https://www.w3schools.com/python/python_syntax.asp' 
+        },
+        { 
+          judul: 'Variabel & Tipe Data',
+          penjelasan: '🎨 Di Python, variabel dibuat saat pertama kali diberi nilai. Tidak perlu deklarasi tipe data eksplisit seperti di Java atau C++!\n\n📝 String = TEKS (kutip satu atau dua)\n🔢 Integer = ANGKA BULAT\n🔢 Float = ANGKA DESIMAL\n✅ Boolean = True atau False (huruf besar awal)',
+          contohKode: 'nama = "Budi"       # String\numur = 20           # Integer\ntinggi = 1.75       # Float\naktif = True        # Boolean\n\nprint(f"Nama: {nama}, Umur: {umur}")',
+          bedahKode: '📦 Variabel dibuat otomatis saat di-assign\n📝 f-string (f"...") adalah cara modern format string di Python\n💡 Tipe data bisa dicek dengan fungsi type(nama)',
+          linkW3: 'https://www.w3schools.com/python/python_variables.asp' 
+        },
+        { 
+          judul: 'Operator Aritmatika',
+          penjelasan: '➕ Python bisa jadi KALKULATOR canggih!\n\n• + (tambah), - (kurang), * (kali)\n• / (bagi hasil float)\n• // (bagi hasil bulat / floor division)\n• % (MODULO = sisa bagi)\n• ** (pangkat)',
+          contohKode: 'a = 15\nb = 4\nprint(a + b)   # 19\nprint(a / b)   # 3.75\nprint(a // b)  # 3\nprint(a % b)   # 3 (sisa bagi)\nprint(2 ** 3)  # 8 (pangkat)',
+          bedahKode: '🔁 % sangat berguna untuk cek ganjil/genap\n💡 // membulatkan ke bawah ke integer terdekat',
+          linkW3: 'https://www.w3schools.com/python/python_operators.asp' 
+        },
+        { 
+          judul: 'Kondisional: If, Elif, Else',
+          penjelasan: '🔀 Kondisional seperti PERCABANGAN JALAN.\n\n⚠️ PENTING: Python menggunakan INDENTASI (biasanya 4 spasi) untuk menandai blok kode, bukan kurung kurawal {} seperti bahasa lain!',
+          contohKode: 'cuaca = "hujan"\n\nif cuaca == "hujan":\n    print("Bawa payung ☔")\nelif cuaca == "panas":\n    print("Pakai topi 🧢")\nelse:\n    print("Bebas! 😎")',
+          bedahKode: '🔍 if cek kondisi pertama\n🔄 elif untuk kondisi tambahan\n❌ else jika semua kondisi false\n⚠️ Jangan lupa tanda titik dua (:) dan indentasi!',
+          linkW3: 'https://www.w3schools.com/python/python_conditions.asp' 
+        },
+        { 
+          judul: 'Perulangan: For Loop',
+          penjelasan: '🔁 For loop di Python digunakan untuk mengiterasi sebuah urutan (list, string, range).\n\n📍 Struktur:\nfor item in urutan:\n    # kode yang diulang',
+          contohKode: '# Cetak angka 1 sampai 5\nfor i in range(1, 6):\n    print(f"Iterasi ke-{i}")\n\n# Loop melalui list\nbuah = ["apel", "jeruk"]\nfor b in buah:\n    print(b)',
+          bedahKode: '🎬 range(1, 6) menghasilkan 1, 2, 3, 4, 5\n⚠️ Batas atas range tidak termasuk\n💡 range(start, stop, step)',
+          linkW3: 'https://www.w3schools.com/python/python_for_loops.asp' 
+        },
+        { 
+          judul: 'Perulangan: While Loop',
+          penjelasan: '🔄 While loop berjalan selama kondisinya True.\n\n⚠️ Hati-hati infinite loop! Pastikan ada kondisi yang mengubah variabel agar loop bisa berhenti.',
+          contohKode: 'count = 0\nwhile count < 3:\n    print(f"Count: {count}")\n    count += 1  # Penting: ubah variabel!\n\nprint("Selesai")',
+          bedahKode: '🔄 while kondisi:\n➕ count += 1 adalah cara Python menulis count = count + 1\n🛑 break untuk keluar loop, continue untuk skip ke iterasi berikutnya',
+          linkW3: 'https://www.w3schools.com/python/python_while_loops.asp' 
+        },
+        { 
+          judul: 'List Dasar',
+          penjelasan: '📚 List = KOLEKSI data berurutan yang BISA DIUBAH (mutable).\n\n• Index mulai dari 0\n• Ditulis dengan kurung siku []\n• Bisa berisi campuran tipe data',
+          contohKode: 'buah = ["apel", "jeruk", "mangga"]\nprint(buah[0])      # "apel"\nprint(buah[-1])     # "mangga" (index dari belakang)\nbuah.append("pisang") # tambah di akhir\nprint(len(buah))    # 4 (panjang list)',
+          bedahKode: '📦 buah[0]: elemen pertama\n📏 len(): fungsi untuk dapat panjang list\n➕ .append(): tambah elemen di akhir',
+          linkW3: 'https://www.w3schools.com/python/python_lists.asp' 
+        },
+        { 
+          judul: 'Dictionary Dasar',
+          penjelasan: '🗂️ Dictionary = kumpulan data berpasangan KEY:VALUE.\n\n• Mirip object di JS atau format JSON\n• Ditulis dengan kurung kurawal {}\n• Key harus unik dan immutable (string/number)',
+          contohKode: 'user = {\n    "nama": "Siti",\n    "umur": 22,\n    "aktif": True\n}\nprint(user["nama"])       # "Siti"\nprint(user.get("kota", "Unknown")) # Aman, tidak error jika tidak ada\nuser["umur"] = 23         # ubah nilai',
+          bedahKode: '🔑 Key: "nama", "umur"\n📦 Value: datanya\n🔍 .get(): cara aman akses dict tanpa KeyError',
+          linkW3: 'https://www.w3schools.com/python/python_dictionaries.asp' 
+        },
+        { 
+          judul: 'Tuple & Set',
+          penjelasan: '📦 Tuple = List yang TIDAK BISA DIUBAH (immutable). Ditulis dengan ().\n📚 Set = Kumpulan data UNIK (tidak ada duplikat). Ditulis dengan {}. Tidak berurutan.',
+          contohKode: 'koordinat = (10, 20)  # Tuple\n# koordinat[0] = 5  # ERROR! Tuple tidak bisa diubah\n\nangka = {1, 2, 2, 3, 3}\nprint(angka)  # {1, 2, 3} (duplikat dihapus otomatis)',
+          bedahKode: '🔒 Tuple: untuk data yang tetap (contoh: koordinat, hari)\n📚 Set: bagus untuk operasi matematika (union, intersection) dan hapus duplikat',
+          linkW3: 'https://www.w3schools.com/python/python_tuples.asp' 
+        },
+        { 
+          judul: 'List Comprehension',
+          penjelasan: '✨ Cara Pythonic (elegan) untuk membuat list baru dari list yang sudah ada dalam satu baris kode.\n\n📍 Struktur: [ekspresi for item in iterable if kondisi]',
+          contohKode: 'angka = [1, 2, 3, 4, 5]\n# Buat list kuadrat\ndua_kali = [x * 2 for x in angka]\nprint(dua_kali)  # [2, 4, 6, 8, 10]\n\n# Dengan kondisi\ngenap = [x for x in angka if x % 2 == 0]',
+          bedahKode: '✨ Lebih cepat dan ringkas dibanding for loop biasa\n💡 Sangat sering digunakan di Python profesional',
+          linkW3: 'https://www.w3schools.com/python/python_lists_comprehension.asp' 
+        }
+      ],
+      2: [
+        { judul: 'Fungsi (Def)', penjelasan: '⚙️ Fungsi adalah blok kode yang bisa digunakan kembali.\n📍 Struktur:\ndef nama_fungsi(parameter):\n    # kode\n    return hasil', contohKode: 'def sapa(nama):\n    return f"Halo, {nama}!"\n\npesan = sapa("Budi")\nprint(pesan)', bedahKode: '⚙️ def untuk mendefinisikan fungsi\n📤 return untuk mengembalikan nilai\n💡 Jika tidak ada return, fungsi mengembalikan None', linkW3: 'https://www.w3schools.com/python/python_functions.asp' },
+        { judul: '*args dan **kwargs', penjelasan: '📦 Memungkinkan fungsi menerima jumlah argumen yang tidak ditentukan.\n• *args: menerima argumen posisional sebagai tuple\n• **kwargs: menerima argumen keyword sebagai dictionary', contohKode: 'def jumlahkan(*args):\n    return sum(args)\n\nprint(jumlahkan(1, 2, 3, 4))  # 10\n\ndef cetak_info(**kwargs):\n    for key, value in kwargs.items():\n        print(f"{key}: {value}")\n\ncetak_info(nama="Ani", umur=25)', bedahKode: '📦 *args: kumpulkan jadi tuple\n🗂️ **kwargs: kumpulkan jadi dictionary\n💡 Nama "args" dan "kwargs" adalah konvensi, yang penting tanda * dan **', linkW3: 'https://www.w3schools.com/python/python_args_kwargs.asp' },
+        { judul: 'Scope Variabel', penjelasan: '🔍 Scope menentukan di mana variabel bisa diakses.\n• Local: di dalam fungsi\n• Global: di luar fungsi\n⚠️ Gunakan global keyword dengan hati-hati!', contohKode: 'x = 10  # Global\n\ndef ubah():\n    global x\n    x = 20  # Mengubah variabel global\n\nubah()\nprint(x)  # 20', bedahKode: '🌍 Global: diakses di mana saja\n📦 Local: hanya di dalam fungsi\n⚠️ Hindari mengubah global variable, lebih baik return nilai', linkW3: 'https://www.w3schools.com/python/python_scope.asp' },
+        { judul: 'Import Module', penjelasan: '📚 Module adalah file Python (.py) yang berisi kode yang bisa digunakan ulang.\n• import math\n• from math import sqrt\n• import math as m', contohKode: 'import math\nimport random\n\nprint(math.sqrt(16))       # 4.0\nprint(random.randint(1, 10))  # Angka acak 1-10', bedahKode: '📚 import: memuat seluruh module\n🎯 from ... import: memuat bagian spesifik\n💡 Buat module sendiri dengan membuat file .py dan import namanya', linkW3: 'https://www.w3schools.com/python/python_modules.asp' },
+        { judul: 'File I/O (Baca & Tulis)', penjelasan: '📝 Python memudahkan membaca dan menulis file.\n⚠️ Selalu gunakan context manager (with) agar file otomatis ditutup, mencegah memory leak.', contohKode: '# Menulis file\nwith open("data.txt", "w") as file:\n    file.write("Halo Python!\\n")\n\n# Membaca file\nwith open("data.txt", "r") as file:\n    isi = file.read()\n    print(isi)', bedahKode: '📝 "w": write (timpa), "a": append (tambah), "r": read\n🔒 with open(): otomatis menutup file meski terjadi error', linkW3: 'https://www.w3schools.com/python/python_file_handling.asp' },
+        { judul: 'Error Handling (Try/Except)', penjelasan: '🛡️ Menangani error agar program tidak crash.\n📍 Struktur:\ntry:\n    # kode berisiko\nexcept JenisError:\n    # tangani error\nfinally:\n    # selalu dijalankan', contohKode: 'try:\n    hasil = 10 / 0\nexcept ZeroDivisionError:\n    print("Tidak bisa membagi dengan nol!")\nexcept Exception as e:\n    print(f"Error lain: {e}")\nfinally:\n    print("Eksekusi selesai")', bedahKode: '🛡️ try: blok kode yang mungkin error\n🚨 except: tangkap error spesifik\n🏁 finally: opsional, selalu jalan (misal: tutup file)', linkW3: 'https://www.w3schools.com/python/python_try_except.asp' },
+        { judul: 'Map, Filter, Lambda', penjelasan: '⚡ Fungsi anonim (lambda) dan functional programming dasar.\n• lambda: fungsi kecil satu baris\n• map(): terapkan fungsi ke semua item\n• filter(): saring item', contohKode: 'angka = [1, 2, 3, 4]\n\n# Lambda\nkuadrat = lambda x: x ** 2\n\n# Map\ndua_kali = list(map(lambda x: x * 2, angka))\n\n# Filter\ngenap = list(filter(lambda x: x % 2 == 0, angka))', bedahKode: '⚡ lambda x: ekspresi\n🔄 map & filter mengembalikan iterator, bungkus dengan list() untuk melihat hasilnya', linkW3: 'https://www.w3schools.com/python/python_lambda.asp' },
+        { judul: 'Datetime Module', penjelasan: '📅 Bekerja dengan tanggal dan waktu.\n• datetime.now(): waktu saat ini\n• strftime(): format waktu ke string', contohKode: 'from datetime import datetime\n\nsekarang = datetime.now()\nprint(sekarang.strftime("%Y-%m-%d %H:%M:%S"))\n\n# Buat tanggal spesifik\nultah = datetime(2000, 5, 15)', bedahKode: '📅 %Y: tahun 4 digit, %m: bulan, %d: hari\n⏱️ Sangat berguna untuk logging dan timestamp', linkW3: 'https://www.w3schools.com/python/python_datetime.asp' },
+        { judul: 'Virtual Environment (Venv)', penjelasan: '📦 Venv mengisolasi dependensi proyek Python agar tidak bentrok dengan proyek lain atau sistem global.\n📍 Perintah terminal:\npython -m venv myenv\nsource myenv/bin/activate (Mac/Linux)\nmyenv\\Scripts\\activate (Windows)', contohKode: '# Setelah aktivasi, install package:\npip install requests\n\n# Simpan dependensi:\npip freeze > requirements.txt\n\n# Install dari file:\npip install -r requirements.txt', bedahKode: '📦 myenv: nama folder virtual environment\n💡 Selalu gunakan venv untuk setiap proyek Python baru!', linkW3: 'https://www.w3schools.com/python/python_pip.asp' },
+        { judul: 'Review Bulan 2', penjelasan: '📊 Review konsep:\n• Fungsi & Return\n• Module & Import\n• File Handling\n• Error Handling\n• Lambda & Functional', contohKode: 'def proses_file(nama_file):\n    try:\n        with open(nama_file, "r") as f:\n            return [line.strip() for line in f if line.strip()]\n    except FileNotFoundError:\n        return "File tidak ditemukan"', bedahKode: '📦 Gabungan: fungsi, file handling, error handling, dan list comprehension dalam satu blok kode yang rapi.', linkW3: 'https://www.w3schools.com/python/' }
+      ],
+      3: [
+        { judul: 'Class & Object', penjelasan: '🏛️ OOP (Object-Oriented Programming) adalah paradigma berbasis "objek".\n• Class = Cetakan (Blueprint)\n• Object = Instance dari cetakan\n• __init__ = Constructor', contohKode: 'class Mobil:\n    def __init__(self, merk, warna):\n        self.merk = merk\n        self.warna = warna\n    \n    def klakson(self):\n        return "Tin tin!"\n\nmobilku = Mobil("Toyota", "Merah")\nprint(mobilku.merk)', bedahKode: '🏛️ class: definisi blueprint\n⚙️ __init__: inisialisasi atribut\n📌 self: merujuk pada instance objek itu sendiri', linkW3: 'https://www.w3schools.com/python/python_classes.asp' },
+        { judul: 'Inheritance (Pewarisan)', penjelasan: '🧬 Class anak mewarisi atribut dan metode dari class induk.\n📍 Struktur: class Anak(Induk):', contohKode: 'class Hewan:\n    def __init__(self, nama):\n        self.nama = nama\n    def suara(self):\n        return "..." \n\nclass Kucing(Hewan):\n    def suara(self):\n        return "Meong!"\n\nkucingku = Kucing("Kitty")\nprint(kucingku.nama)    # Warisan\nprint(kucingku.suara()) # Override', bedahKode: '🧬 (Hewan): mewarisi dari class Hewan\n🔄 Override: menimpa metode induk dengan versi baru\n💡 super().__init__() untuk panggil constructor induk', linkW3: 'https://www.w3schools.com/python/python_inheritance.asp' },
+        { judul: 'Polymorphism', penjelasan: '🎭 Polimorfisme = "Banyak bentuk". Metode dengan nama sama berperilaku berbeda di class yang berbeda.', contohKode: 'class Bebek:\n    def suara(self): return "Kwek!"\n\nclass Anjing:\n    def suara(self): return "Guk!"\n\ndef buat_suara(hewan):\n    print(hewan.suara())\n\nbuat_suara(Bebek())\nbuat_suara(Anjing())', bedahKode: '🎭 Fungsi buat_suara tidak peduli tipe objek, selama objek punya metode .suara()\n💡 Fleksibilitas tinggi dalam desain sistem', linkW3: 'https://www.w3schools.com/python/python_polymorphism.asp' },
+        { judul: 'Encapsulation', penjelasan: '🔒 Enkapsulasi = menyembunyikan detail internal objek.\n• _atribut: protected (konvensi, jangan diakses langsung)\n• __atribut: private (name mangling, lebih ketat)', contohKode: 'class Rekening:\n    def __init__(self):\n        self.__saldo = 0  # Private\n    \n    def deposit(self, jumlah):\n        if jumlah > 0:\n            self.__saldo += jumlah\n    \n    def get_saldo(self):\n        return self.__saldo\n\nrek = Rekening()\nrek.deposit(100)\nprint(rek.get_saldo())', bedahKode: '🔒 __saldo: tidak bisa diakses langsung dari luar (rek.__saldo akan error)\n📤 Gunakan getter/setter untuk kontrol akses', linkW3: 'https://www.w3schools.com/python/python_encapsulation.asp' },
+        { judul: 'Classmethod & Staticmethod', penjelasan: '⚙️ Decorator untuk metode class:\n• @classmethod: menerima cls sebagai argumen pertama, bisa akses class state.\n• @staticmethod: tidak menerima self atau cls, seperti fungsi biasa di dalam class.', contohKode: 'class DateUtils:\n    tahun = 2024\n    \n    @classmethod\n    def ubah_tahun(cls, tahun_baru):\n        cls.tahun = tahun_baru\n    \n    @staticmethod\n    def is_valid(date_str):\n        return len(date_str) == 10\n\nDateUtils.ubah_tahun(2025)', bedahKode: '⚙️ @classmethod: untuk factory methods atau ubah class variable\n⚙️ @staticmethod: untuk fungsi utilitas yang terkait secara logika dengan class', linkW3: 'https://www.w3schools.com/python/python_class_methods.asp' },
+        { judul: 'Magic Methods (Dunder)', penjelasan: '✨ Metode khusus dengan double underscore (__) yang memungkinkan kustomisasi perilaku built-in.\n• __str__: representasi string untuk user\n• __repr__: representasi string untuk developer\n• __len__, __add__, dll.', contohKode: 'class Buku:\n    def __init__(self, judul):\n        self.judul = judul\n    \n    def __str__(self):\n        return f"Buku: {self.judul}"\n    \n    def __len__(self):\n        return 100\n\nb = Buku("Python 101")\nprint(str(b))  # Panggil __str__', bedahKode: '✨ __str__: dipanggil oleh print() atau str()\n💡 Membuat objek custom berperilaku seperti built-in types', linkW3: 'https://www.w3schools.com/python/python_ref_magic.asp' },
+        { judul: 'Property Decorator', penjelasan: '🎀 @property memungkinkan metode diakses seperti atribut, sambil tetap menjalankan logika (seperti getter/setter) di belakang layar.', contohKode: 'class Suhu:\n    def __init__(self, celsius):\n        self._celsius = celsius\n    \n    @property\n    def fahrenheit(self):\n        return (self._celsius * 9/5) + 32\n    \n    @fahrenheit.setter\n    def fahrenheit(self, value):\n        self._celsius = (value - 32) * 5/9\n\nt = Suhu(0)\nprint(t.fahrenheit)  # 32.0', bedahKode: '🎀 @property: buat metode jadi read-only attribute\n⚙️ @namaproperti.setter: izinkan assignment', linkW3: 'https://www.w3schools.com/python/python_ref_func_decorators.asp' },
+        { judul: 'Composition vs Inheritance', penjelasan: '🧩 Composition = "Memiliki" (Has-a), Inheritance = "Adalah" (Is-a).\nComposition sering lebih fleksibel daripada inheritance yang dalam.', contohKode: 'class Mesin:\n    def start(self): return "Mesin nyala"\n\nclass Mobil:\n    def __init__(self):\n        self.mesin = Mesin()  # Composition\n    \n    def start(self):\n        return self.mesin.start()', bedahKode: '🧩 Mobil "memiliki" Mesin, bukan "adalah" Mesin\n💡 Favor composition over inheritance untuk kode yang lebih maintainable', linkW3: 'https://www.w3schools.com/python/python_classes.asp' },
+        { judul: 'Abstract Base Classes (ABC)', penjelasan: '📐 ABC memaksa class anak untuk mengimplementasikan metode tertentu. Menggunakan module abc.', contohKode: 'from abc import ABC, abstractmethod\n\nclass Shape(ABC):\n    @abstractmethod\n    def area(self):\n        pass\n\nclass Circle(Shape):\n    def __init__(self, r): self.r = r\n    def area(self): return 3.14 * self.r ** 2\n\n# s = Shape() # ERROR! Tidak bisa di-instantiate', bedahKode: '📐 ABC: class tidak bisa dibuat objeknya langsung\n⚠️ @abstractmethod: anak WAJIB implementasikan ini', linkW3: 'https://www.w3schools.com/python/python_ref_abc.asp' },
+        { judul: 'Review Bulan 3', penjelasan: '📊 Review OOP:\n• Class & Object\n• Inheritance & Polymorphism\n• Encapsulation\n• Magic Methods & Decorators', contohKode: 'class Employee:\n    def __init__(self, name, salary):\n        self.name = name\n        self.__salary = salary\n    \n    @property\n    def salary(self):\n        return self.__salary', bedahKode: '🏛️ Gabungan konsep OOP untuk membuat class yang aman, terstruktur, dan mudah dikembangkan.', linkW3: 'https://www.w3schools.com/python/python_classes.asp' }
+      ],
+      4: [
+        { judul: 'Decorators', penjelasan: '🎀 Decorator adalah fungsi yang memodifikasi perilaku fungsi lain tanpa mengubah kode aslinya.\n📍 Menggunakan @nama_decorator', contohKode: 'def timer(func):\n    def wrapper(*args, **kwargs):\n        print("Mulai...")\n        result = func(*args, **kwargs)\n        print("Selesai!")\n        return result\n    return wrapper\n\n@timer\ndef sapa():\n    print("Halo!")', bedahKode: '🎀 @timer: syntax sugar untuk sapa = timer(sapa)\n📦 *args, **kwargs: agar decorator bekerja dengan fungsi apa pun', linkW3: 'https://www.w3schools.com/python/python_ref_func_decorators.asp' },
+        { judul: 'Generators & Yield', penjelasan: '⚡ Generator menghasilkan nilai satu per satu (lazy evaluation), menghemat memori untuk data besar.\n📍 Menggunakan yield, bukan return.', contohKode: 'def hitung_mundur(n):\n    while n > 0:\n        yield n\n        n -= 1\n\nfor angka in hitung_mundur(3):\n    print(angka)  # 3, 2, 1', bedahKode: '⚡ yield: pause fungsi dan kembalikan nilai, state disimpan\n💡 Sangat efisien untuk file besar atau infinite sequence', linkW3: 'https://www.w3schools.com/python/python_generators.asp' },
+        { judul: 'Context Managers (With)', penjelasan: '🔒 Context manager mengelola sumber daya (file, network) secara otomatis, memastikan cleanup (seperti .close()) meski terjadi error.', contohKode: 'class MyFile:\n    def __init__(self, filename):\n        self.filename = filename\n    def __enter__(self):\n        self.file = open(self.filename, "w")\n        return self.file\n    def __exit__(self, exc_type, exc_val, exc_tb):\n        self.file.close()\n\nwith MyFile("test.txt") as f:\n    f.write("Halo")', bedahKode: '🔒 __enter__: setup\n🧹 __exit__: cleanup\n💡 Bisa juga dibuat sederhana dengan @contextlib.contextmanager', linkW3: 'https://www.w3schools.com/python/python_file_handling.asp' },
+        { judul: 'Type Hinting', penjelasan: '📝 Menambahkan anotasi tipe data untuk keterbacaan dan bantuan IDE. Tidak enforced saat runtime, tapi bagus untuk maintenance.', contohKode: 'def sapa(nama: str, umur: int) -> str:\n    return f"{nama} berumur {umur}"\n\nfrom typing import List, Dict\n\ndef proses(data: List[int]) -> Dict[str, int]:\n    return {"total": sum(data)}', bedahKode: '📝 : str dan -> str adalah hint\n📚 typing module: untuk tipe kompleks seperti List, Dict, Optional', linkW3: 'https://www.w3schools.com/python/python_ref_typing.asp' },
+        { judul: 'Logging Module', penjelasan: '📝 Logging lebih baik daripada print() untuk production. Bisa atur level (DEBUG, INFO, WARNING, ERROR, CRITICAL).', contohKode: 'import logging\n\nlogging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")\n\nlogging.info("Aplikasi dimulai")\nlogging.warning("Peringatan: memori rendah")\nlogging.error("Terjadi kesalahan!")', bedahKode: '📝 basicConfig: setup awal\n⚠️ INFO untuk alur normal, ERROR untuk kegagalan\n💡 Bisa simpan ke file dengan filename="app.log"', linkW3: 'https://www.w3schools.com/python/python_ref_logging.asp' },
+        { judul: 'Regex (Re Module)', penjelasan: '🔍 Regular Expression untuk pencocokan pola string yang kompleks.\n• re.search: cari pertama\n• re.findall: cari semua\n• re.sub: ganti', contohKode: 'import re\n\nteks = "Email saya: user@email.com dan admin@test.org"\nemails = re.findall(r"[\\w\\.-]+@[\\w\\.-]+", teks)\nprint(emails)\n\n# Validasi\nif re.match(r"^\\d{3}-\\d{4}$", "123-4567"):\n    print("Valid!")', bedahKode: '🔍 r"..." : raw string, agar \\ tidak di-escape\n📦 findall: kembalikan list semua match\n💡 Regex sangat powerful untuk validasi dan scraping', linkW3: 'https://www.w3schools.com/python/python_regex.asp' },
+        { judul: 'Collections Module', penjelasan: '📚 Alternatif built-in yang lebih powerful:\n• Counter: hitung frekuensi\n• defaultdict: dict dengan default value\n• namedtuple: tuple dengan nama field', contohKode: 'from collections import Counter, defaultdict\n\nkata = ["apel", "jeruk", "apel", "mangga"]\nprint(Counter(kata))  # {\'apel\': 2, ...}\n\nd = defaultdict(int)\nd["a"] += 1  # Tidak error, default 0', bedahKode: '📚 Counter: sangat berguna untuk analisis data sederhana\n💡 defaultdict: hindari KeyError saat akses key yang belum ada', linkW3: 'https://www.w3schools.com/python/python_ref_collection.asp' },
+        { judul: 'Itertools Module', penjelasan: '♾️ Fungsi pembuat iterator yang efisien untuk looping kompleks.\n• permutations, combinations, product, cycle', contohKode: 'import itertools\n\n# Kombinasi 2 dari list\nlist1 = [1, 2, 3]\nprint(list(itertools.combinations(list1, 2)))\n# Output: [(1, 2), (1, 3), (2, 3)]', bedahKode: '♾️ Menghemat memori karena menghasilkan lazy iterator\n💡 Sangat berguna untuk algoritma brute-force atau kombinatorial', linkW3: 'https://www.w3schools.com/python/python_ref_itertools.asp' },
+        { judul: 'Asyncio Dasar', penjelasan: '⚡ Pemrograman asinkron untuk I/O bound tasks (network, file).\n• async def: definisi coroutine\n• await: tunggu hasil tanpa memblokir thread utama', contohKode: 'import asyncio\n\nasync def main():\n    print("Mulai")\n    await asyncio.sleep(1)  # Simulasi I/O\n    print("Selesai")\n\nasyncio.run(main())', bedahKode: '⚡ asyncio.run(): entry point\n⏸️ await: serahkan kontrol ke event loop\n💡 Untuk concurrency, gunakan asyncio.gather()', linkW3: 'https://www.w3schools.com/python/python_async.asp' },
+        { judul: 'Review Bulan 4', penjelasan: '📊 Review Python Lanjutan:\n• Decorators\n• Generators\n• Context Managers\n• Type Hinting & Logging\n• Regex & Collections', contohKode: 'import logging\nfrom typing import List\n\ndef log_calls(func):\n    def wrapper(*args):\n        logging.info(f"Calling {func.__name__}")\n        return func(*args)\n    return wrapper', bedahKode: '🚀 Gabungan decorator, typing, dan logging untuk membuat kode production-ready.', linkW3: 'https://www.w3schools.com/python/' }
+      ],
+      5: [
+        { judul: 'Requests (HTTP)', penjelasan: '🌐 Module requests (harus di-pip install) untuk melakukan HTTP request dengan mudah.\n• GET: ambil data\n• POST: kirim data', contohKode: 'import requests\n\nresponse = requests.get("https://api.github.com")\nprint(response.status_code)  # 200\nprint(response.json())       # Parse JSON otomatis', bedahKode: '🌐 requests.get(): kirim GET request\n✅ response.ok: cek apakah sukses (2xx)\n📦 .json(): konversi response ke dictionary Python', linkW3: 'https://www.w3schools.com/python/python_requests.asp' },
+        { judul: 'Bekerja dengan JSON', penjelasan: '📦 JSON adalah format data standar web.\n• json.dumps(): dict ke string JSON\n• json.loads(): string JSON ke dict\n• json.dump/load: untuk file', contohKode: 'import json\n\ndata = {"nama": "Budi", "umur": 25}\njson_str = json.dumps(data, indent=2)\nprint(json_str)\n\n# Parse kembali\nparsed = json.loads(json_str)\nprint(parsed["nama"])', bedahKode: '📦 dumps: dump string\n📂 dump: tulis ke file\n💡 indent=2 membuat JSON mudah dibaca (pretty print)', linkW3: 'https://www.w3schools.com/python/python_json.asp' },
+        { judul: 'Web Scraping Dasar (BeautifulSoup)', penjelasan: '🕷️ Mengambil data dari website.\n• requests: ambil HTML\n• BeautifulSoup: parse dan cari elemen', contohKode: 'import requests\nfrom bs4 import BeautifulSoup\n\nhtml = requests.get("https://example.com").text\nsoup = BeautifulSoup(html, "html.parser")\n\ntitle = soup.find("h1").text\nprint(title)', bedahKode: '🕷️ BeautifulSoup: parser HTML/XML\n🔍 .find(): ambil elemen pertama, .find_all(): ambil semua\n⚠️ Hormati robots.txt dan gunakan delay', linkW3: 'https://www.w3schools.com/python/python_web_scraping.asp' },
+        { judul: 'Pandas Dasar', penjelasan: '🐼 Pandas adalah library standar untuk manipulasi dan analisis data.\n• DataFrame: tabel data 2D\n• Series: kolom data 1D', contohKode: 'import pandas as pd\n\ndata = {"Nama": ["Ani", "Budi"], "Umur": [25, 30]}\ndf = pd.DataFrame(data)\n\nprint(df.head())\nprint(df["Umur"].mean())  # Rata-rata', bedahKode: '🐼 pd.DataFrame(): buat tabel dari dict/list\n📊 .head(): lihat 5 baris pertama\n💡 Sangat powerful untuk data cleaning', linkW3: 'https://www.w3schools.com/python/pandas/default.asp' },
+        { judul: 'Environment Variables (.env)', penjelasan: '🔐 Jangan hardcode secret (API key, password)! Gunakan file .env dan module python-dotenv.', contohKode: '# .env file:\n# API_KEY=rahasia123\n\nimport os\nfrom dotenv import load_dotenv\n\nload_dotenv()\napi_key = os.getenv("API_KEY")\nprint(api_key)', bedahKode: '🔐 load_dotenv(): muat variabel dari file .env\n📦 os.getenv(): ambil nilai dengan aman\n⚠️ Tambahkan .env ke .gitignore!', linkW3: 'https://www.w3schools.com/python/python_ref_os.asp' },
+        { judul: 'SQLite Database Dasar', penjelasan: '🗄️ SQLite adalah database ringan built-in Python, sempurna untuk proyek kecil atau prototyping.', contohKode: 'import sqlite3\n\nconn = sqlite3.connect("test.db")\ncursor = conn.cursor()\n\ncursor.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)")\ncursor.execute("INSERT INTO users (name) VALUES (?)", ("Budi",))\nconn.commit()\nconn.close()', bedahKode: '🗄️ sqlite3.connect(): buat/buka file DB\n❓ ?: parameterized query untuk mencegah SQL Injection\n✅ commit(): simpan perubahan', linkW3: 'https://www.w3schools.com/python/python_sqlite.asp' },
+        { judul: 'Unit Testing (Unittest)', penjelasan: '🧪 Menulis tes otomatis untuk memastikan kode bekerja sesuai harapan.\n• unittest module built-in\n• assertEqual, assertTrue, dll.', contohKode: 'import unittest\n\ndef tambah(a, b):\n    return a + b\n\nclass TestMath(unittest.TestCase):\n    def test_tambah(self):\n        self.assertEqual(tambah(2, 3), 5)\n\nif __name__ == "__main__":\n    unittest.main()', bedahKode: '🧪 unittest.TestCase: base class untuk tes\n✅ assertEqual: cek kesamaan nilai\n💡 Jalankan dengan python -m unittest', linkW3: 'https://www.w3schools.com/python/python_testing.asp' },
+        { judul: 'API REST Konsep', penjelasan: '🔌 Memahami cara kerja API:\n• Endpoint: URL\n• Method: GET, POST, PUT, DELETE\n• Status Code: 200 (OK), 404 (Not Found), 500 (Error)', contohKode: '# Simulasi konsumsi API\nimport requests\n\nresponse = requests.post(\n    "https://jsonplaceholder.typicode.com/posts",\n    json={"title": "foo", "body": "bar", "userId": 1}\n)\nprint(response.status_code)', bedahKode: '🔌 json=: requests otomatis set header Content-Type: application/json\n📊 Status code penting untuk error handling', linkW3: 'https://www.w3schools.com/python/python_ref_requests.asp' },
+        { judul: 'Bekerja dengan CSV', penjelasan: '📊 Module csv memudahkan membaca dan menulis file CSV (Comma Separated Values).', contohKode: 'import csv\n\n# Menulis CSV\nwith open("data.csv", "w", newline="") as f:\n    writer = csv.writer(f)\n    writer.writerow(["Nama", "Umur"])\n    writer.writerow(["Budi", 25])', bedahKode: '📊 csv.writer: objek untuk menulis baris\n📝 newline="": mencegah baris kosong tambahan di Windows\n💡 Sangat umum untuk data tabular sederhana', linkW3: 'https://www.w3schools.com/python/python_file_handling.asp' },
+        { judul: 'Review Bulan 5', penjelasan: '📊 Review Data & Web:\n• Requests & JSON\n• Web Scraping\n• Pandas Dasar\n• Database SQLite\n• Testing', contohKode: 'import requests\nimport json\n\ndef get_user(user_id):\n    res = requests.get(f"https://api.example.com/users/{user_id}")\n    res.raise_for_status()\n    return res.json()', bedahKode: '🚀 raise_for_status(): lempar exception jika status code 4xx/5xx\n💡 Pattern standar untuk API wrapper yang robust', linkW3: 'https://www.w3schools.com/python/' }
+      ],
+      6: [
+        { judul: 'Flask/FastAPI Dasar', penjelasan: '🚀 Framework web ringan untuk membuat API atau web app.\n• Flask: minimalis, fleksibel\n• FastAPI: modern, cepat, auto-docs', contohKode: '# Contoh FastAPI\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get("/")\ndef read_root():\n    return {"message": "Hello World"}\n\n# Jalankan: uvicorn main:app --reload', bedahKode: '🚀 @app.get(): definisi route\n📦 Return dict: FastAPI otomatis konversi ke JSON\n⚡ uvicorn: ASGI server untuk jalankan app', linkW3: 'https://www.w3schools.com/python/python_flask.asp' },
+        { judul: 'Routing & Parameters', penjelasan: '🗺️ Menangani URL yang berbeda dan parameter dinamis.', contohKode: '@app.get("/users/{user_id}")\ndef get_user(user_id: int):\n    return {"user_id": user_id}\n\n@app.get("/items/")\ndef read_items(skip: int = 0, limit: int = 10):\n    return {"skip": skip, "limit": limit}', bedahKode: '🗺️ {user_id}: path parameter\n❓ skip: int = 0: query parameter dengan default value\n💡 Type hinting di FastAPI otomatis validasi input!', linkW3: 'https://www.w3schools.com/python/python_flask.asp' },
+        { judul: 'Middleware & CORS', penjelasan: '🛡️ Middleware memproses request sebelum sampai ke route.\n• CORS: izinkan browser dari domain lain akses API.', contohKode: 'from fastapi.middleware.cors import CORSMiddleware\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=["*"],\n    allow_methods=["*"],\n    allow_headers=["*"],\n)', bedahKode: '🛡️ Middleware: intercept request/response\n🌐 CORS: penting untuk frontend (React/Vue) yang consume API ini\n⚠️ allow_origins=["*"] hanya untuk development!', linkW3: 'https://www.w3schools.com/python/python_ref_middleware.asp' },
+        { judul: 'Struktur Proyek Profesional', penjelasan: '📂 Jangan taruh semua kode di satu file! Pisahkan berdasarkan tanggung jawab (Separation of Concerns).', contohKode: '# Struktur folder:\n# ├── main.py          (Entry point)\n# ├── routers/\n# │   ├── users.py\n# │   └── items.py\n# ├── models/          (Database schemas)\n# ├── schemas/         (Pydantic models)\n# └── requirements.txt', bedahKode: '📂 routers/: pisahkan endpoint\n📦 schemas/: validasi data masuk/keluar\n💡 Gunakan Blueprint (Flask) atau APIRouter (FastAPI)', linkW3: 'https://www.w3schools.com/python/python_ref_directory.asp' },
+        { judul: 'Docker Dasar untuk Python', penjelasan: '🐳 Docker membungkus aplikasi dan dependensinya agar berjalan sama di mana saja.', contohKode: '# Dockerfile\nFROM python:3.9-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install -r requirements.txt\nCOPY . .\nCMD ["uvicorn", "main:app", "--host", "0.0.0.0"]', bedahKode: '🐳 FROM: base image\n📦 COPY & RUN: install dependensi\n▶️ CMD: perintah saat container dijalankan', linkW3: 'https://www.w3schools.com/docker/' },
+        { judul: 'Deployment (Render/Railway)', penjelasan: '🚀 Deploy aplikasi Python ke cloud.\n• Push kode ke GitHub\n• Hubungkan ke Render/Railway\n• Set environment variables\n• Deploy!', contohKode: '# requirements.txt harus ada:\nfastapi\nuvicorn\npython-dotenv\n\n# Procfile (untuk beberapa platform):\nweb: uvicorn main:app --host 0.0.0.0 --port $PORT', bedahKode: '🚀 Platform PaaS memudahkan deploy tanpa setup server manual\n⚠️ Pastikan PORT dinamis sesuai variabel lingkungan', linkW3: 'https://www.w3schools.com/python/python_deploy.asp' },
+        { judul: 'CI/CD Konsep', penjelasan: '🔄 Continuous Integration/Continuous Deployment.\n• GitHub Actions untuk otomatisasi test dan deploy saat push kode.', contohKode: '# .github/workflows/test.yml\nname: Test\non: [push]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v2\n      - name: Run tests\n        run: pytest', bedahKode: '🔄 on: [push]: jalankan saat ada push\n✅ Otomatisasi menjamin kode yang di-deploy sudah dites', linkW3: 'https://www.w3schools.com/python/python_ref_github.asp' },
+        { judul: 'Keamanan Aplikasi Python', penjelasan: '🔐 Best practices:\n• Jangan commit .env\n• Gunakan parameterized queries (hindari SQLi)\n• Validasi input (Pydantic)\n• Rate limiting', contohKode: '# Aman dari SQL Injection\ncursor.execute("SELECT * FROM users WHERE name = ?", (user_input,))\n\n# Validasi Pydantic\nclass User(BaseModel):\n    age: int = Field(gt=0)', bedahKode: '🔐 ?: parameter binding\n🛡️ Field(gt=0): pastikan umur > 0\n💡 Keamanan adalah lapisan, bukan fitur tambahan', linkW3: 'https://www.w3schools.com/python/python_security.asp' },
+        { judul: 'Testing dengan Pytest', penjelasan: '🧪 Pytest adalah framework testing yang lebih powerful dan ringkas dibanding unittest bawaan.', contohKode: '# test_main.py\ndef test_addition():\n    assert 1 + 1 == 2\n\ndef test_string():\n    assert "python".upper() == "PYTHON"', bedahKode: '🧪 pytest: jalankan dengan perintah `pytest`\n✅ assert: pernyataan untuk cek kebenaran\n💡 Lebih sedikit boilerplate dibanding unittest', linkW3: 'https://www.w3schools.com/python/python_testing.asp' },
+        { judul: 'Review Bulan 6', penjelasan: '📊 Review Framework & Deploy:\n• FastAPI/Flask\n• Routing & Middleware\n• Docker\n• Deployment\n• CI/CD & Security', contohKode: 'from fastapi import FastAPI\napp = FastAPI()\n\n@app.get("/")\ndef root():\n    return {"status": "healthy"}', bedahKode: '🚀 Aplikasi minimal yang siap di-dockerize dan di-deploy ke production.', linkW3: 'https://www.w3schools.com/python/' }
+      ]
+    };
+
+    /* =========================================
+       5. STUDI KASUS (HARI 11-17)
+       ========================================= */
+    const studyCasesByMonth = {
+      1: [
+        { judul: 'Kalkulator BMI', penjelasan: '🏥 Klinik butuh program hitung BMI pasien.\nRumus: BMI = berat(kg) / (tinggi(m)²)', contohKode: 'berat = 70\ntinggi = 1.75\nbmi = berat / (tinggi ** 2)\nprint(f"BMI: {bmi:.2f}")\n\nif bmi < 18.5:\n    print("Underweight")\nelif bmi < 25:\n    print("Normal")\nelse:\n    print("Overweight")', bedahKode: '📝 :.2f memformat float ke 2 desimal\n🔀 if/elif/else untuk kategori', linkW3: 'https://www.w3schools.com/python/python_conditions.asp', regexValidator: /berat\s*=.*tinggi\s*=.*bmi\s*=.*print.*BMI/s, tantangan: 'Buat kalkulator BMI: berat = 70, tinggi = 1.75, hitung bmi, lalu print dengan format 2 desimal.', expectedOutput: 'BMI' },
+        { judul: 'Sistem Login Sederhana', penjelasan: '🔐 Autentikasi dasar dengan Python.', contohKode: 'username_db = "admin"\npassword_db = "12345"\n\ninput_user = "admin"\ninput_pass = "12345"\n\nif input_user == username_db and input_pass == password_db:\n    print("Login Berhasil")\nelse:\n    print("Login Gagal")', bedahKode: '🔑 and: kedua kondisi harus True\n==: cek kesamaan nilai', linkW3: 'https://www.w3schools.com/python/python_conditions.asp', regexValidator: /if.*==.*and.*==.*print.*Berhasil/s, tantangan: 'Buat sistem login: cek username dan password dengan if, print "Login Berhasil" jika cocok.', expectedOutput: 'Berhasil' },
+        { judul: 'Konverter Suhu', penjelasan: '🌡️ Konversi Celsius ke Fahrenheit dan Kelvin.', contohKode: 'celsius = 25\nfahrenheit = (celsius * 9/5) + 32\nkelvin = celsius + 273.15\nprint(f"Fahrenheit: {fahrenheit}")\nprint(f"Kelvin: {kelvin}")', bedahKode: '🌡️ Rumus konversi standar\n📝 f-string untuk interpolasi variabel', linkW3: 'https://www.w3schools.com/python/python_operators.asp', regexValidator: /celsius\s*=.*fahrenheit\s*=.*kelvin\s*=.*print/s, tantangan: 'Buat konverter: celsius = 25, hitung fahrenheit dan kelvin, print keduanya.', expectedOutput: 'Fahrenheit' },
+        { judul: 'Sistem Diskon Belanja', penjelasan: '🛒 Hitung diskon berdasarkan total belanja.', contohKode: 'total = 300000\nif total >= 500000:\n    diskon = 0.2\nelif total >= 200000:\n    diskon = 0.1\nelse:\n    diskon = 0.05\n\nharga_akhir = total * (1 - diskon)\nprint(f"Harga Akhir: {harga_akhir}")', bedahKode: '💰 Logika bertingkat dengan elif\n🧮 Perhitungan harga setelah diskon', linkW3: 'https://www.w3schools.com/python/python_conditions.asp', regexValidator: /total\s*=.*diskon\s*=.*harga_akhir.*print/s, tantangan: 'Buat sistem diskon: total = 300000. Diskon 20% jika >=500rb, 10% jika >=200rb, 5% lainnya. Hitung harga_akhir.', expectedOutput: 'Harga Akhir' },
+        { judul: 'Manajemen Inventori Toko', penjelasan: '📦 Filter dan hitung nilai inventori menggunakan List of Dicts.', contohKode: 'produk = [\n    {"nama": "Laptop", "harga": 5000000, "stok": 10},\n    {"nama": "Mouse", "harga": 100000, "stok": 0}\n]\ntersedia = [p for p in produk if p["stok"] > 0]\nprint(f"Tersedia: {len(tersedia)} item")', bedahKode: '📦 List of dictionaries\n✨ List comprehension untuk filter', linkW3: 'https://www.w3schools.com/python/python_lists_comprehension.asp', regexValidator: /produk\s*=.*\[.*\{.*stok.*\}.*\].*tersedia\s*=.*\[.*for.*in.*if/s, tantangan: 'Buat list produk (dict). Gunakan list comprehension untuk filter stok > 0, print jumlahnya.', expectedOutput: 'Tersedia' },
+        { judul: 'Validasi Form Pendaftaran', penjelasan: '📝 Validasi input user dengan kondisi.', contohKode: 'umur = 20\nemail = "user@mail.com"\npassword = "rahasia123"\n\nif umur < 17:\n    print("Umur harus 17+")\nelif "@" not in email:\n    print("Email tidak valid")\nelif len(password) < 8:\n    print("Password min 8 karakter")\nelse:\n    print("Pendaftaran Berhasil!")', bedahKode: '🔍 in: cek substring\n📏 len(): cek panjang string', linkW3: 'https://www.w3schools.com/python/python_conditions.asp', regexValidator: /if.*<.*elif.*not in.*elif.*len.*<.*else.*print.*Berhasil/s, tantangan: 'Validasi: umur >= 17, email harus ada "@", password min 8 karakter. Print pesan sesuai kondisi.', expectedOutput: 'Berhasil' },
+        { judul: 'Sistem Penilaian Mahasiswa', penjelasan: '🎓 Hitung rata-rata dan filter mahasiswa lulus.', contohKode: 'mahasiswa = [\n    {"nama": "Andi", "nilai": 85},\n    {"nama": "Budi", "nilai": 55}\n]\ntotal_nilai = sum(m["nilai"] for m in mahasiswa)\nrata_rata = total_nilai / len(mahasiswa)\nlulus = [m for m in mahasiswa if m["nilai"] >= 60]\nprint(f"Rata-rata: {rata_rata}")', bedahKode: '🧮 sum() dengan generator expression\n📊 List comprehension untuk filter', linkW3: 'https://www.w3schools.com/python/python_ref_functions.asp', regexValidator: /mahasiswa\s*=.*sum.*rata_rata\s*=.*lulus\s*=.*print.*Rata-rata/s, tantangan: 'Buat list mahasiswa. Hitung rata_rata dengan sum() dan len(), filter yang nilai >= 60, print rata-rata.', expectedOutput: 'Rata-rata' }
+      ],
+      2: [
+        { judul: 'Fungsi Kalkulator', penjelasan: '⚙️ Buat fungsi yang menerima operator dan dua angka.', contohKode: 'def kalkulator(a, b, operator):\n    if operator == "+":\n        return a + b\n    elif operator == "-":\n        return a - b\n    return "Operator tidak dikenal"\n\nprint(kalkulator(10, 5, "+"))', bedahKode: '⚙️ def: definisi fungsi\n📤 return: kembalikan hasil', linkW3: 'https://www.w3schools.com/python/python_functions.asp', regexValidator: /def\s+kalkulator.*if.*elif.*return/s, tantangan: 'Buat fungsi kalkulator(a, b, operator) yang return hasil penjumlahan atau pengurangan.', expectedOutput: null },
+        { judul: 'Baca Tulis File', penjelasan: '📝 Simpan dan baca data dari file teks.', contohKode: 'with open("catatan.txt", "w") as f:\n    f.write("Halo Python\\n")\n\nwith open("catatan.txt", "r") as f:\n    isi = f.read()\n    print(isi.strip())', bedahKode: '🔒 with open(): manajemen file otomatis\n📝 "w" untuk tulis, "r" untuk baca', linkW3: 'https://www.w3schools.com/python/python_file_handling.asp', regexValidator: /with open.*"w".*write.*with open.*"r".*read/s, tantangan: 'Tulis "Halo Python" ke file, lalu baca dan print isinya menggunakan with open().', expectedOutput: 'Halo' },
+        { judul: 'Error Handling Division', penjelasan: '🛡️ Tangani error pembagian dengan nol.', contohKode: 'def bagi(a, b):\n    try:\n        hasil = a / b\n        return hasil\n    except ZeroDivisionError:\n        return "Error: Tidak bisa bagi dengan nol"\n\nprint(bagi(10, 0))', bedahKode: '🛡️ try/except: tangkap error spesifik\n🚫 ZeroDivisionError: exception bawaan Python', linkW3: 'https://www.w3schools.com/python/python_try_except.asp', regexValidator: /def\s+bagi.*try.*except ZeroDivisionError.*return.*Error/s, tantangan: 'Buat fungsi bagi(a, b) dengan try/except yang tangani ZeroDivisionError.', expectedOutput: 'Error' },
+        { judul: 'Lambda & Map', penjelasan: '⚡ Gunakan lambda dan map untuk menggandakan list angka.', contohKode: 'angka = [1, 2, 3, 4]\ndua_kali = list(map(lambda x: x * 2, angka))\nprint(dua_kali)', bedahKode: '⚡ lambda x: x * 2: fungsi anonim\n🔄 map: terapkan ke setiap elemen', linkW3: 'https://www.w3schools.com/python/python_lambda.asp', regexValidator: /map\s*\(\s*lambda.*\*.*2.*angka\s*\)/s, tantangan: 'Gunakan map dan lambda untuk menggandakan setiap angka di list [1, 2, 3, 4].', expectedOutput: null },
+        { judul: 'Filter Genap', penjelasan: '🔍 Saring hanya angka genap dari list.', contohKode: 'angka = [1, 2, 3, 4, 5, 6]\ngenap = list(filter(lambda x: x % 2 == 0, angka))\nprint(genap)', bedahKode: '🔍 filter: pertahankan yang kondisi True\n% 2 == 0: cek genap', linkW3: 'https://www.w3schools.com/python/python_ref_functions.asp', regexValidator: /filter\s*\(\s*lambda.*%.*2.*==.*0/s, tantangan: 'Gunakan filter dan lambda untuk mendapatkan hanya angka genap dari list.', expectedOutput: null },
+        { judul: 'Datetime Sekarang', penjelasan: '📅 Tampilkan tanggal dan waktu saat ini.', contohKode: 'from datetime import datetime\nsekarang = datetime.now()\nprint(sekarang.strftime("%Y-%m-%d"))', bedahKode: '📅 datetime.now(): waktu saat ini\n📝 strftime: format ke string', linkW3: 'https://www.w3schools.com/python/python_datetime.asp', regexValidator: /from datetime import datetime.*now\(\).*strftime/s, tantangan: 'Import datetime, ambil now(), dan print dengan format YYYY-MM-DD.', expectedOutput: null },
+        { judul: 'Fungsi dengan *args', penjelasan: '📦 Fungsi yang menerima jumlah argumen tak terbatas.', contohKode: 'def jumlahkan(*args):\n    return sum(args)\n\nprint(jumlahkan(1, 2, 3, 4))', bedahKode: '📦 *args: kumpulkan jadi tuple\n🧮 sum(): jumlahkan semua elemen tuple', linkW3: 'https://www.w3schools.com/python/python_args_kwargs.asp', regexValidator: /def\s+\w+\s*\(\s*\*args\s*\).*sum\s*\(\s*args\s*\)/s, tantangan: 'Buat fungsi jumlahkan(*args) yang return sum(args).', expectedOutput: null }
+      ],
+      3: [
+        { judul: 'Class Mobil', penjelasan: '🏛️ Buat class sederhana dengan __init__ dan metode.', contohKode: 'class Mobil:\n    def __init__(self, merk):\n        self.merk = merk\n    def klakson(self):\n        return "Tin tin!"\n\nmobilku = Mobil("Toyota")\nprint(mobilku.merk)', bedahKode: '🏛️ __init__: constructor\n📌 self: referensi ke instance', linkW3: 'https://www.w3schools.com/python/python_classes.asp', regexValidator: /class\s+Mobil.*def __init__.*self\.merk.*def klakson/s, tantangan: 'Buat class Mobil dengan __init__(self, merk) dan metode klakson(self).', expectedOutput: null },
+        { judul: 'Inheritance Hewan', penjelasan: '🧬 Class Kucing mewarisi class Hewan.', contohKode: 'class Hewan:\n    def __init__(self, nama):\n        self.nama = nama\n\nclass Kucing(Hewan):\n    def suara(self):\n        return "Meong"\n\nk = Kucing("Kitty")\nprint(k.nama)', bedahKode: '🧬 (Hewan): syntax inheritance\n🔄 Anak punya akses ke atribut induk', linkW3: 'https://www.w3schools.com/python/python_inheritance.asp', regexValidator: /class\s+Kucing\s*\(\s*Hewan\s*\).*def __init__|class\s+Hewan.*class\s+Kucing/s, tantangan: 'Buat class Hewan dan class Kucing(Hewan). Instance Kucing harus bisa akses atribut nama.', expectedOutput: null },
+        { judul: 'Encapsulation Rekening', penjelasan: '🔒 Sembunyikan atribut saldo dengan __.', contohKode: 'class Rekening:\n    def __init__(self):\n        self.__saldo = 0\n    def deposit(self, jumlah):\n        self.__saldo += jumlah\n    def get_saldo(self):\n        return self.__saldo\n\nr = Rekening()\nr.deposit(100)\nprint(r.get_saldo())', bedahKode: '🔒 __saldo: private attribute\n📤 get_saldo: public getter', linkW3: 'https://www.w3schools.com/python/python_encapsulation.asp', regexValidator: /self\.__saldo.*def get_saldo.*return self\.__saldo/s, tantangan: 'Buat class Rekening dengan atribut private __saldo dan metode get_saldo().', expectedOutput: null },
+        { judul: 'Magic Method __str__', penjelasan: '✨ Kustomisasi representasi string objek.', contohKode: 'class Buku:\n    def __init__(self, judul):\n        self.judul = judul\n    def __str__(self):\n        return f"Buku: {self.judul}"\n\nb = Buku("Python")\nprint(str(b))', bedahKode: '✨ __str__: dipanggil oleh print() atau str()', linkW3: 'https://www.w3schools.com/python/python_ref_magic.asp', regexValidator: /def __str__\(self\):.*return.*f"/s, tantangan: 'Buat class Buku dengan __str__ yang return f"Buku: {self.judul}".', expectedOutput: null },
+        { judul: 'Classmethod', penjelasan: '⚙️ Metode yang beroperasi pada class, bukan instance.', contohKode: 'class DateUtils:\n    tahun = 2024\n    @classmethod\n    def ubah_tahun(cls, tahun_baru):\n        cls.tahun = tahun_baru\n\nDateUtils.ubah_tahun(2025)\nprint(DateUtils.tahun)', bedahKode: '⚙️ @classmethod: argumen pertama adalah cls', linkW3: 'https://www.w3schools.com/python/python_class_methods.asp', regexValidator: /@classmethod.*def \w+\(cls.*cls\.\w+\s*=/s, tantangan: 'Buat class dengan class variable dan @classmethod untuk mengubahnya.', expectedOutput: null },
+        { judul: 'Property Decorator', penjelasan: '🎀 Buat metode yang bisa diakses seperti atribut.', contohKode: 'class Suhu:\n    def __init__(self, c):\n        self._c = c\n    @property\n    def f(self):\n        return (self._c * 9/5) + 32\n\nt = Suhu(0)\nprint(t.f)', bedahKode: '🎀 @property: no parentheses needed saat panggil', linkW3: 'https://www.w3schools.com/python/python_ref_func_decorators.asp', regexValidator: /@property.*def \w+\(self\):.*return/s, tantangan: 'Buat class Suhu dengan @property untuk metode yang hitung fahrenheit.', expectedOutput: null },
+        { judul: 'Composition', penjelasan: '🧩 Class memiliki instance class lain.', contohKode: 'class Mesin:\n    def start(self): return "Nyala"\n\nclass Mobil:\n    def __init__(self):\n        self.mesin = Mesin()\n    def start(self):\n        return self.mesin.start()\n\nm = Mobil()\nprint(m.start())', bedahKode: '🧩 self.mesin = Mesin(): komposisi', linkW3: 'https://www.w3schools.com/python/python_classes.asp', regexValidator: /class Mesin.*class Mobil.*self\.mesin\s*=\s*Mesin\(\)/s, tantangan: 'Buat class Mobil yang memiliki atribut self.mesin = Mesin().', expectedOutput: null }
+      ],
+      4: [
+        { judul: 'Decorator Sederhana', penjelasan: '🎀 Fungsi yang membungkus fungsi lain.', contohKode: 'def my_decorator(func):\n    def wrapper():\n        print("Sebelum")\n        func()\n        print("Sesudah")\n    return wrapper\n\n@my_decorator\ndef sapa():\n    print("Halo")\n\nsapa()', bedahKode: '🎀 @my_decorator: syntax sugar\n📦 wrapper: fungsi pengganti', linkW3: 'https://www.w3schools.com/python/python_ref_func_decorators.asp', regexValidator: /def \w+\(func\):.*def wrapper\(\):.*@/s, tantangan: 'Buat decorator yang print "Sebelum" dan "Sesudah" saat fungsi dipanggil.', expectedOutput: null },
+        { judul: 'Generator Yield', penjelasan: '⚡ Fungsi yang menghasilkan nilai satu per satu.', contohKode: 'def hitung_mundur(n):\n    while n > 0:\n        yield n\n        n -= 1\n\nfor i in hitung_mundur(3):\n    print(i)', bedahKode: '⚡ yield: pause dan kembalikan nilai', linkW3: 'https://www.w3schools.com/python/python_generators.asp', regexValidator: /def \w+.*while.*yield/s, tantangan: 'Buat generator hitung_mundur(n) yang yield angka dari n ke 1.', expectedOutput: null },
+        { judul: 'Context Manager Custom', penjelasan: '🔒 Buat context manager dengan __enter__ dan __exit__.', contohKode: 'class MyFile:\n    def __enter__(self):\n        return "File Terbuka"\n    def __exit__(self, *args):\n        print("File Ditutup")\n\nwith MyFile() as f:\n    print(f)', bedahKode: '🔒 __enter__: setup, __exit__: cleanup', linkW3: 'https://www.w3schools.com/python/python_file_handling.asp', regexValidator: /class \w+:.*def __enter__.*def __exit__/s, tantangan: 'Buat class dengan __enter__ dan __exit__ untuk digunakan dengan with.', expectedOutput: null },
+        { judul: 'Type Hinting Fungsi', penjelasan: '📝 Tambahkan anotasi tipe pada parameter dan return.', contohKode: 'def sapa(nama: str, umur: int) -> str:\n    return f"{nama} berumur {umur}"\n\nprint(sapa("Budi", 25))', bedahKode: '📝 : str dan -> str adalah hint', linkW3: 'https://www.w3schools.com/python/python_ref_typing.asp', regexValidator: /def \w+\(\w+:\s*str.*\)\s*->\s*str:/s, tantangan: 'Buat fungsi dengan type hinting: parameter str dan int, return str.', expectedOutput: null },
+        { judul: 'Logging Dasar', penjelasan: '📝 Gunakan module logging, bukan print.', contohKode: 'import logging\nlogging.basicConfig(level=logging.INFO)\nlogging.info("Aplikasi dimulai")\nlogging.error("Terjadi kesalahan")', bedahKode: '📝 basicConfig: setup level', linkW3: 'https://www.w3schools.com/python/python_ref_logging.asp', regexValidator: /import logging.*basicConfig.*logging\.info/s, tantangan: 'Import logging, basicConfig level INFO, dan log sebuah pesan info.', expectedOutput: null },
+        { judul: 'Regex Findall', penjelasan: '🔍 Cari semua email dalam string.', contohKode: 'import re\nteks = "a@b.com dan c@d.org"\nemails = re.findall(r"[\\w\\.-]+@[\\w\\.-]+", teks)\nprint(emails)', bedahKode: '🔍 re.findall: kembalikan list match', linkW3: 'https://www.w3schools.com/python/python_regex.asp', regexValidator: /import re.*re\.findall.*@/s, tantangan: 'Gunakan re.findall untuk mencari pola email dalam sebuah string.', expectedOutput: null },
+        { judul: 'Counter Collections', penjelasan: '📚 Hitung frekuensi item dalam list.', contohKode: 'from collections import Counter\nitems = ["apel", "apel", "jeruk"]\nprint(Counter(items))', bedahKode: '📚 Counter: dict subclass untuk counting', linkW3: 'https://www.w3schools.com/python/python_ref_collection.asp', regexValidator: /from collections import Counter.*Counter\(/s, tantangan: 'Import Counter dan gunakan untuk menghitung frekuensi item dalam list.', expectedOutput: null }
+      ],
+      5: [
+        { judul: 'Requests GET', penjelasan: '🌐 Ambil data dari API publik.', contohKode: 'import requests\nres = requests.get("https://jsonplaceholder.typicode.com/todos/1")\nprint(res.json()["title"])', bedahKode: '🌐 requests.get(): kirim request\n📦 .json(): parse response', linkW3: 'https://www.w3schools.com/python/python_requests.asp', regexValidator: /import requests.*requests\.get.*\.json\(\)/s, tantangan: 'Gunakan requests.get ke jsonplaceholder, parse json, dan print title.', expectedOutput: null },
+        { judul: 'JSON Dump & Load', penjelasan: '📦 Konversi dict ke JSON string dan sebaliknya.', contohKode: 'import json\ndata = {"nama": "Budi"}\njson_str = json.dumps(data)\nparsed = json.loads(json_str)\nprint(parsed["nama"])', bedahKode: '📦 dumps: dict to str, loads: str to dict', linkW3: 'https://www.w3schools.com/python/python_json.asp', regexValidator: /import json.*json\.dumps.*json\.loads/s, tantangan: 'Gunakan json.dumps dan json.loads untuk konversi bolak-balik dictionary.', expectedOutput: null },
+        { judul: 'Pandas DataFrame', penjelasan: '🐼 Buat tabel data sederhana.', contohKode: 'import pandas as pd\ndf = pd.DataFrame({"Nama": ["Ani"], "Umur": [25]})\nprint(df.head())', bedahKode: '🐼 pd.DataFrame(): buat tabel', linkW3: 'https://www.w3schools.com/python/pandas/default.asp', regexValidator: /import pandas as pd.*pd\.DataFrame/s, tantangan: 'Import pandas as pd dan buat DataFrame dari dictionary sederhana.', expectedOutput: null },
+        { judul: 'SQLite Connect', penjelasan: '🗄️ Koneksi ke database SQLite in-memory.', contohKode: 'import sqlite3\nconn = sqlite3.connect(":memory:")\ncursor = conn.cursor()\ncursor.execute("CREATE TABLE test (id INTEGER)")\nprint("Tabel dibuat")', bedahKode: '🗄️ :memory: database di RAM (cepat untuk tes)', linkW3: 'https://www.w3schools.com/python/python_sqlite.asp', regexValidator: /import sqlite3.*sqlite3\.connect.*execute.*CREATE TABLE/s, tantangan: 'Import sqlite3, connect ke ":memory:", dan execute CREATE TABLE.', expectedOutput: null },
+        { judul: 'Unittest Dasar', penjelasan: '🧪 Tulis tes sederhana dengan unittest.', contohKode: 'import unittest\ndef tambah(a, b): return a + b\nclass TestMath(unittest.TestCase):\n    def test_tambah(self):\n        self.assertEqual(tambah(2, 3), 5)', bedahKode: '🧪 unittest.TestCase: base class\n✅ assertEqual: cek kesamaan', linkW3: 'https://www.w3schools.com/python/python_testing.asp', regexValidator: /import unittest.*class.*unittest\.TestCase.*assertEqual/s, tantangan: 'Buat class test yang inherit unittest.TestCase dan gunakan assertEqual.', expectedOutput: null },
+        { judul: 'Dotenv Load', penjelasan: '🔐 Muat variabel lingkungan dari file .env.', contohKode: 'import os\nfrom dotenv import load_dotenv\nload_dotenv()\nprint(os.getenv("API_KEY", "default"))', bedahKode: '🔐 load_dotenv(): muat file .env\n📦 os.getenv(): ambil nilai', linkW3: 'https://www.w3schools.com/python/python_ref_os.asp', regexValidator: /from dotenv import load_dotenv.*load_dotenv\(\).*os\.getenv/s, tantangan: 'Import load_dotenv, panggil fungsinya, dan ambil variabel dengan os.getenv.', expectedOutput: null },
+        { judul: 'API POST Request', penjelasan: '📤 Kirim data ke API.', contohKode: 'import requests\ndata = {"title": "foo"}\nres = requests.post("https://jsonplaceholder.typicode.com/posts", json=data)\nprint(res.status_code)', bedahKode: '📤 json=: kirim payload sebagai JSON', linkW3: 'https://www.w3schools.com/python/python_requests.asp', regexValidator: /requests\.post.*json\s*=/s, tantangan: 'Gunakan requests.post dengan parameter json={} ke API placeholder.', expectedOutput: null }
+      ],
+      6: [
+        { judul: 'FastAPI App', penjelasan: '🚀 Buat aplikasi web minimal dengan FastAPI.', contohKode: 'from fastapi import FastAPI\napp = FastAPI()\n\n@app.get("/")\ndef root():\n    return {"message": "Hello World"}', bedahKode: '🚀 FastAPI(): instance app\n🗺️ @app.get(): definisi route', linkW3: 'https://www.w3schools.com/python/python_flask.asp', regexValidator: /from fastapi import FastAPI.*FastAPI\(\).*@app\.get/s, tantangan: 'Import FastAPI, buat instance app, dan definisikan route GET "/".', expectedOutput: null },
+        { judul: 'Path Parameter', penjelasan: '🗺️ Ambil variabel dari URL.', contohKode: '@app.get("/users/{user_id}")\ndef get_user(user_id: int):\n    return {"user_id": user_id}', bedahKode: '🗺️ {user_id}: path parameter\n📝 : int: type hinting otomatis', linkW3: 'https://www.w3schools.com/python/python_flask.asp', regexValidator: /@app\.get\(".*\{.*\}"\).*def.*\(.*: int\)/s, tantangan: 'Buat route dengan path parameter {item_id} dan type hint int.', expectedOutput: null },
+        { judul: 'CORS Middleware', penjelasan: '🛡️ Izinkan cross-origin requests.', contohKode: 'from fastapi.middleware.cors import CORSMiddleware\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=["*"],\n    allow_methods=["*"]\n)', bedahKode: '🛡️ add_middleware: tambahkan layer pemrosesan', linkW3: 'https://www.w3schools.com/python/python_ref_middleware.asp', regexValidator: /CORSMiddleware.*add_middleware.*allow_origins/s, tantangan: 'Tambahkan CORSMiddleware ke app dengan allow_origins=["*"].', expectedOutput: null },
+        { judul: 'Pydantic Schema', penjelasan: '📦 Validasi data dengan Pydantic.', contohKode: 'from pydantic import BaseModel\nclass User(BaseModel):\n    nama: str\n    umur: int\n\nuser = User(nama="Budi", umur=25)\nprint(user.nama)', bedahKode: '📦 BaseModel: class dasar Pydantic\n✅ Validasi otomatis saat inisialisasi', linkW3: 'https://www.w3schools.com/python/python_ref_pydantic.asp', regexValidator: /from pydantic import BaseModel.*class.*BaseModel.*: str.*: int/s, tantangan: 'Import BaseModel, buat class User dengan field nama (str) dan umur (int).', expectedOutput: null },
+        { judul: 'Dockerfile Python', penjelasan: '🐳 Konfigurasi Docker untuk aplikasi Python.', contohKode: '# FROM python:3.9-slim\n# WORKDIR /app\n# COPY . .\n# RUN pip install -r requirements.txt\n# CMD ["python", "main.py"]\nprint("Dockerfile siap")', bedahKode: '🐳 FROM: base image\n▶️ CMD: perintah jalankan', linkW3: 'https://www.w3schools.com/docker/', regexValidator: /FROM python.*WORKDIR.*COPY.*RUN pip.*CMD/s, tantangan: 'Tulis string multi-line yang berisi instruksi Dockerfile dasar untuk Python.', expectedOutput: null },
+        { judul: 'SQLite di FastAPI', penjelasan: '🗄️ Integrasi database sederhana.', contohKode: 'import sqlite3\nfrom fastapi import FastAPI\napp = FastAPI()\n\ndef get_db():\n    return sqlite3.connect("test.db")\n\n@app.get("/items")\ndef get_items():\n    return {"status": "ok"}', bedahKode: '🗄️ get_db: dependency untuk koneksi', linkW3: 'https://www.w3schools.com/python/python_sqlite.asp', regexValidator: /import sqlite3.*def get_db.*sqlite3\.connect/s, tantangan: 'Buat fungsi get_db() yang return sqlite3.connect("test.db").', expectedOutput: null },
+        { judul: 'Environment Variable di Code', penjelasan: '🔐 Ambil PORT dari environment untuk deploy.', contohKode: 'import os\nport = int(os.getenv("PORT", 8000))\nprint(f"Running on port {port}")', bedahKode: '🔐 os.getenv: ambil dengan fallback value', linkW3: 'https://www.w3schools.com/python/python_ref_os.asp', regexValidator: /os\.getenv\s*\(\s*["\']PORT["\'].*\)/s, tantangan: 'Gunakan os.getenv untuk mengambil "PORT" dengan default 8000, konversi ke int.', expectedOutput: null }
+      ]
+    };
+
+    /* =========================================
+       6. LATIHAN PENGUATAN (HARI 18-26)
+       ========================================= */
+    const practiceExercises = {
+      1: [
+        { judul: 'Tipe Data & Konversi', tantangan: 'Buat 5 variabel dengan tipe berbeda (str, int, float, bool, None). Konversi int ke str dengan str() dan str ke int dengan int(). Print tipe masing-masing dengan type().', regexValidator: /type\s*\(|str\s*\(|int\s*\(/s, expectedOutput: null },
+        { judul: 'Operator Lengkap', tantangan: 'Buat program cek ganjil/genap dengan modulo (%), dan gunakan operator // (floor division).', regexValidator: /%\s*2|\/\/\s*\d+/s, expectedOutput: null },
+        { judul: 'Nested If-Else', tantangan: 'Buat grading: >=90="A", >=80="B", >=70="C", else="D". Jika nilai <0 atau >100 print "Invalid".', regexValidator: /if.*>=.*90.*elif.*>=.*80.*else/s, expectedOutput: null },
+        { judul: 'Loop Patterns', tantangan: 'Buat 3 loop: for dengan range(5), while hitung mundur dari 3, dan for melalui list ["a","b","c"].', regexValidator: /for.*in range.*while.*for.*in \[/s, expectedOutput: null },
+        { judul: 'List Comprehension', tantangan: 'Buat list angka 1-10. Gunakan list comprehension untuk buat list baru berisi kuadrat angka genap saja.', regexValidator: /\[.*for.*in.*if.*%\s*2\s*==\s*0\]/s, expectedOutput: null },
+        { judul: 'Dictionary Manipulation', tantangan: 'Buat dict "student" dengan nama dan umur. Tambah key "nilai". Loop semua key-value dengan .items().', regexValidator: /\.items\(\)|student\s*=.*\{.*\}/s, expectedOutput: null },
+        { judul: 'Fungsi Sederhana', tantangan: 'Buat 2 fungsi: satu dengan return, satu dengan default parameter. Panggil keduanya.', regexValidator: /def\s+\w+\(.*\):.*return|def\s+\w+\(.*=.*\):/s, expectedOutput: null },
+        { judul: 'List of Dicts', tantangan: 'Buat list 3 produk (dict dengan nama dan harga). Gunakan loop untuk hitung total harga.', regexValidator: /for.*in.*\+.*harga|sum\(/s, expectedOutput: null },
+        { judul: 'Error Handling', tantangan: 'Buat fungsi bagi(a, b) dengan try/except yang tangani ZeroDivisionError dan return pesan error.', regexValidator: /try:.*except ZeroDivisionError:/s, expectedOutput: null }
+      ],
+      2: [
+        { judul: 'Fungsi *args/**kwargs', tantangan: 'Buat fungsi yang terima *args dan print jumlahnya, dan **kwargs yang print semua key-value.', regexValidator: /def.*\*args.*\*\*kwargs|sum\s*\(\s*args\s*\)/s, expectedOutput: null },
+        { judul: 'File Handling', tantangan: 'Gunakan with open() untuk menulis "Halo" ke file "test.txt", lalu baca dan print isinya.', regexValidator: /with open.*"w".*write.*with open.*"r".*read/s, expectedOutput: null },
+        { judul: 'Module Import', tantangan: 'Import math dan random. Print math.sqrt(16) dan random.randint(1, 10).', regexValidator: /import math.*import random.*math\.sqrt.*random\.randint/s, expectedOutput: null },
+        { judul: 'Lambda & Map', tantangan: 'Gunakan map() dan lambda untuk mengubah list string menjadi list panjang string tersebut.', regexValidator: /map\s*\(\s*lambda.*len/s, expectedOutput: null },
+        { judul: 'Filter & List', tantangan: 'Gunakan filter() dan lambda untuk ambil hanya string yang dimulai dengan huruf "A" dari list.', regexValidator: /filter\s*\(\s*lambda.*startswith\s*\(\s*["\']A/s, expectedOutput: null },
+        { judul: 'Datetime Formatting', tantangan: 'Ambil datetime.now() dan format menjadi string "YYYY-MM-DD" menggunakan strftime.', regexValidator: /datetime\.now\(\).*strftime\s*\(\s*["\']%Y-%m-%d["\']/s, expectedOutput: null },
+        { judul: 'Scope Variabel', tantangan: 'Buat variabel global, lalu ubah di dalam fungsi menggunakan keyword global, lalu print.', regexValidator: /global \w+|def.*:\s*global/s, expectedOutput: null },
+        { judul: 'Custom Exception', tantangan: 'Buat class CustomError(Exception) dan raise error tersebut jika nilai < 0 dalam fungsi.', regexValidator: /class \w+\(Exception\).*raise \w+\(/s, expectedOutput: null },
+        { judul: 'Fungsi Rekursif', tantangan: 'Buat fungsi faktorial(n) yang memanggil dirinya sendiri (rekursif) dengan kondisi dasar n==1.', regexValidator: /def \w+\(n\):.*if.*==.*1.*return.*\* \w+\(n-1\)/s, expectedOutput: null }
+      ],
+      3: [
+        { judul: 'Class & Object', tantangan: 'Buat class "Dog" dengan __init__(name, age) dan metode "bark()" yang return string.', regexValidator: /class Dog.*def __init__.*self\.name.*def bark/s, expectedOutput: null },
+        { judul: 'Inheritance', tantangan: 'Buat class "Bird" dan class "Eagle(Bird)" yang override metode "fly()".', regexValidator: /class Eagle\s*\(\s*Bird\s*\).*def fly/s, expectedOutput: null },
+        { judul: 'Encapsulation', tantangan: 'Buat class "Bank" dengan atribut private __balance dan metode public deposit() serta get_balance().', regexValidator: /self\.__balance.*def get_balance/s, expectedOutput: null },
+        { judul: 'Polymorphism', tantangan: 'Buat fungsi "test_sound(animal)" yang panggil animal.sound(). Buat 2 class berbeda dengan metode sound().', regexValidator: /def test_sound.*\.sound\(\)|class \w+:.*def sound/s, expectedOutput: null },
+        { judul: 'Magic Methods', tantangan: 'Buat class "Book" dengan __init__ dan __str__ yang return judul buku.', regexValidator: /def __str__\(self\):.*return/s, expectedOutput: null },
+        { judul: 'Property Decorator', tantangan: 'Buat class "Temperature" dengan @property untuk metode celsius_to_fahrenheit.', regexValidator: /@property.*def \w+\(self\):.*return/s, expectedOutput: null },
+        { judul: 'Classmethod', tantangan: 'Buat class dengan class variable "count" dan @classmethod "increment_count()" yang menambahkannya.', regexValidator: /@classmethod.*def \w+\(cls\):.*cls\.\w+\s*\+=/s, expectedOutput: null },
+        { judul: 'Composition', tantangan: 'Buat class "Engine" dan class "Car" yang punya atribut self.engine = Engine().', regexValidator: /class Engine.*class Car.*self\.engine\s*=\s*Engine\(\)/s, expectedOutput: null },
+        { judul: 'Abstract Base Class', tantangan: 'Import ABC dan abstractmethod. Buat class "Shape" dengan metode abstract "area()".', regexValidator: /from abc import ABC, abstractmethod.*class \w+\(ABC\).*@abstractmethod/s, expectedOutput: null }
+      ],
+      4: [
+        { judul: 'Decorator Function', tantangan: 'Buat decorator "@timer" yang print waktu sebelum dan sesudah fungsi dijalankan.', regexValidator: /def \w+\(func\):.*def wrapper.*@/s, expectedOutput: null },
+        { judul: 'Generator Yield', tantangan: 'Buat generator "fibonacci(n)" yang yield angka fibonacci sampai n.', regexValidator: /def fibonacci.*yield/s, expectedOutput: null },
+        { judul: 'Context Manager', tantangan: 'Buat class "Timer" dengan __enter__ dan __exit__ untuk mengukur waktu eksekusi blok with.', regexValidator: /def __enter__.*def __exit__/s, expectedOutput: null },
+        { judul: 'Type Hinting', tantangan: 'Buat fungsi dengan type hinting: parameter List[int] dan return Dict[str, int].', regexValidator: /List\[int\].*Dict\[str,\s*int\]/s, expectedOutput: null },
+        { judul: 'Logging Setup', tantangan: 'Setup logging basicConfig dengan level DEBUG dan format "%(levelname)s: %(message)s".', regexValidator: /logging\.basicConfig.*level=logging\.DEBUG.*format=/s, expectedOutput: null },
+        { judul: 'Regex Search', tantangan: 'Gunakan re.search untuk cek apakah string berisi pola angka 3 digit.', regexValidator: /import re.*re\.search.*\d\{3\}/s, expectedOutput: null },
+        { judul: 'Collections Counter', tantangan: 'Gunakan Counter dari collections untuk hitung frekuensi karakter dalam sebuah string.', regexValidator: /from collections import Counter.*Counter\(/s, expectedOutput: null },
+        { judul: 'Itertools Combinations', tantangan: 'Gunakan itertools.combinations untuk dapatkan semua pasangan dari list [1, 2, 3].', regexValidator: /import itertools.*itertools\.combinations/s, expectedOutput: null },
+        { judul: 'Asyncio Sleep', tantangan: 'Buat fungsi async "main()" yang await asyncio.sleep(1) dan print "Done".', regexValidator: /async def main\(\):.*await asyncio\.sleep/s, expectedOutput: null }
+      ],
+      5: [
+        { judul: 'Requests GET', tantangan: 'Gunakan requests.get ke "https://httpbin.org/get" dan print status code.', regexValidator: /import requests.*requests\.get.*\.status_code/s, expectedOutput: null },
+        { judul: 'JSON Parse', tantangan: 'Gunakan json.loads untuk parse string JSON \'{"a": 1}\' dan print nilai "a".', regexValidator: /import json.*json\.loads/s, expectedOutput: null },
+        { judul: 'Pandas Series', tantangan: 'Import pandas as pd. Buat Series dari list [10, 20, 30] dan print mean()-nya.', regexValidator: /import pandas as pd.*pd\.Series.*\.mean\(\)/s, expectedOutput: null },
+        { judul: 'SQLite Insert', tantangan: 'Gunakan sqlite3 untuk connect ":memory:", execute "CREATE TABLE t (id INT)", dan commit().', regexValidator: /import sqlite3.*sqlite3\.connect.*execute.*CREATE TABLE/s, expectedOutput: null },
+        { judul: 'Unittest Assert', tantangan: 'Buat class TestStringMethods(unittest.TestCase) dengan metode test_upper yang gunakan assertEqual.', regexValidator: /class.*unittest\.TestCase.*def test_.*assertEqual/s, expectedOutput: null },
+        { judul: 'Dotenv Get', tantangan: 'Import os dan load_dotenv. Gunakan os.getenv("SECRET") dengan default value "none".', regexValidator: /from dotenv import load_dotenv.*os\.getenv/s, expectedOutput: null },
+        { judul: 'Web Scraping Soup', tantangan: 'Import BeautifulSoup. Buat objek soup dari string "<p>Halo</p>" dan cari tag "p".', regexValidator: /from bs4 import BeautifulSoup.*BeautifulSoup\(.*\.find\(/s, expectedOutput: null },
+        { judul: 'API POST', tantangan: 'Gunakan requests.post dengan parameter json={"key": "value"} ke URL placeholder.', regexValidator: /requests\.post.*json\s*=\s*\{/s, expectedOutput: null },
+        { judul: 'Raise For Status', tantangan: 'Lakukan requests.get dan panggil response.raise_for_status() untuk handle error HTTP.', regexValidator: /requests\.get.*\.raise_for_status\(\)/s, expectedOutput: null }
+      ],
+      6: [
+        { judul: 'FastAPI Root', tantangan: 'Buat instance FastAPI() dan route @app.get("/") yang return {"status": "ok"}.', regexValidator: /FastAPI\(\).*@app\.get\s*\(\s*["\']\/["\']\s*\)/s, expectedOutput: null },
+        { judul: 'Path Parameter', tantangan: 'Buat route @app.get("/items/{item_id}") dengan parameter item_id: int.', regexValidator: /@app\.get\s*\(\s*["\'].*\{.*\}.*["\']\s*\).*item_id:\s*int/s, expectedOutput: null },
+        { judul: 'Query Parameter', tantangan: 'Buat fungsi dengan parameter skip: int = 0 dan limit: int = 10.', regexValidator: /skip:\s*int\s*=\s*0.*limit:\s*int\s*=\s*10/s, expectedOutput: null },
+        { judul: 'Pydantic Model', tantangan: 'Buat class Item(BaseModel) dengan field name: str dan price: float.', regexValidator: /class \w+\(BaseModel\):.*name:\s*str.*price:\s*float/s, expectedOutput: null },
+        { judul: 'CORS Setup', tantangan: 'Gunakan app.add_middleware dengan CORSMiddleware dan allow_origins=["*"].', regexValidator: /add_middleware.*CORSMiddleware.*allow_origins/s, expectedOutput: null },
+        { judul: 'Dockerfile CMD', tantangan: 'Tulis string yang berisi "FROM python:3.9" dan "CMD [\"python\", \"main.py\"]".', regexValidator: /FROM python.*CMD \[.*python.*main\.py/s, expectedOutput: null },
+        { judul: 'SQLite Function', tantangan: 'Buat fungsi get_db() yang return sqlite3.connect("app.db").', regexValidator: /def get_db\(\):.*return sqlite3\.connect/s, expectedOutput: null },
+        { judul: 'Env Port', tantangan: 'Ambil PORT dari os.getenv("PORT") dan konversi ke int dengan fallback 8000.', regexValidator: /int\s*\(\s*os\.getenv\s*\(\s*["\']PORT["\'].*8000/s, expectedOutput: null },
+        { judul: 'Dependency Injection', tantangan: 'Buat route yang terima parameter db: Session = Depends(get_db).', regexValidator: /Depends\s*\(\s*get_db\s*\)/s, expectedOutput: null }
+      ]
+    };
+
+    /* =========================================
+       7. PROJECT AKHIR (HARI 27-29)
+       ========================================= */
+    const projectFinals = {
+      1: [
+        { judul: '🏆 Quiz App CLI', penjelasan: '🎮 Aplikasi Quiz di terminal:\n• List pertanyaan (dict)\n• Loop untuk tampilkan\n• Cek jawaban & skor\n• Print hasil akhir', contohKode: 'quiz = [\n    {"q": "2+2?", "opsi": [3, 4, 5], "ans": 4}\n]\nskor = 0\nfor item in quiz:\n    print(item["q"])\n    # logika cek jawaban', bedahKode: '📦 List of dictionaries\n🔁 for loop\n🔀 if untuk cek jawaban', regexValidator: /quiz\s*=.*for.*in quiz/s, tantangan: 'Buat quiz app sederhana: list dict pertanyaan, loop, cek jawaban, hitung skor.', expectedOutput: null },
+        { judul: '💪 Kalkulator Scientific CLI', penjelasan: '🧮 Kalkulator dengan operasi:\n• +, -, *, /\n• Pangkat (**)\n• Modulo (%)\n• Handle division by zero dengan try/except', contohKode: 'def calc(a, op, b):\n    try:\n        if op == "+": return a + b\n        elif op == "/": return a / b\n    except ZeroDivisionError:\n        return "Error"', bedahKode: '🧮 def fungsi\n🔀 if/elif untuk operator\n🛡️ try/except untuk error', regexValidator: /def calc.*try.*except ZeroDivisionError/s, tantangan: 'Buat fungsi kalkulator dengan try/except untuk handle pembagian nol.', expectedOutput: null },
+        { judul: '🚀 Contact Manager (JSON)', penjelasan: '📝 Manajemen kontak simpan ke file:\n• Tambah, cari, hapus\n• Simpan ke contacts.json\n• Load dari file saat mulai', contohKode: 'import json\ncontacts = []\nwith open("data.json", "w") as f:\n    json.dump(contacts, f)', bedahKode: '📦 json.dump/load\n📝 File handling dengan with', regexValidator: /import json.*json\.dump|json\.load/s, tantangan: 'Buat sistem kontak yang simpan dan load data dari file JSON menggunakan json module.', expectedOutput: null },
+        { judul: '🎯 Review Bulan 1', penjelasan: '📊 Review semua konsep:\n• Variabel & Tipe Data\n• Kontrol Alur\n• List & Dict\n• Fungsi\n🎯 1 program gabungkan minimal 4 konsep', contohKode: 'def analyze(data):\n    total = sum(d["nilai"] for d in data)\n    return total / len(data)', bedahKode: '📦 Fungsi\n🔁 Generator expression\n🧮 Perhitungan', regexValidator: /def \w+\(.*\):.*sum.*for.*in/s, tantangan: 'Program review gabungkan minimal 4 konsep: variabel, list/dict, loop, fungsi.', expectedOutput: null }
+      ],
+      2: [
+        { judul: '📋 Todo App File-Based', penjelasan: '📝 Todo App yang persisten:\n• Tambah, hapus, tandai selesai\n• Simpan ke tasks.txt atau JSON\n• Load saat startup', contohKode: 'import json\ntasks = []\ntry:\n    with open("tasks.json", "r") as f:\n        tasks = json.load(f)\nexcept FileNotFoundError:\n    pass', bedahKode: '🔄 Load data saat mulai\n💾 Simpan setiap perubahan\n🛡️ Handle FileNotFoundError', regexValidator: /import json.*open.*json\.load|json\.dump/s, tantangan: 'Buat Todo App yang load dan save tugas ke file JSON dengan error handling.', expectedOutput: null },
+        { judul: '💪 Form Validator Pro', penjelasan: '📝 Validasi data dictionary:\n• Cek email ada "@", password min 8 char\n• Return dictionary errors', contohKode: 'def validate(data):\n    errors = {}\n    if "@" not in data.get("email", ""):\n        errors["email"] = "Invalid"\n    return errors', bedahKode: '🔍 .get() untuk aman\n📦 Return dict errors', regexValidator: /def validate.*if.*not in.*errors\[/s, tantangan: 'Buat fungsi validate(data) yang cek email dan password, return dict errors jika invalid.', expectedOutput: null },
+        { judul: '🚀 Game Tebak Angka', penjelasan: '🎮 Game interaktif di terminal:\n• Random number 1-100\n• Loop while untuk tebak\n• Hint "terlalu tinggi/rendah"\n• Hitung jumlah percobaan', contohKode: 'import random\ntarget = random.randint(1, 100)\nwhile True:\n    guess = int(input("Tebak: "))\n    if guess == target: break', bedahKode: '🎲 random.randint\n🔄 while True loop\n🛑 break saat benar', regexValidator: /import random.*random\.randint.*while True/s, tantangan: 'Buat game tebak angka dengan random.randint dan while loop yang berikan hint.', expectedOutput: null },
+        { judul: '🎯 Review Bulan 2', penjelasan: '📊 Review:\n• Fungsi & *args\n• File Handling\n• Error Handling\n• Lambda/Map/Filter', contohKode: 'def process_file(filename):\n    try:\n        with open(filename, "r") as f:\n            return [line.strip() for line in f if line.strip()]', bedahKode: '📦 Gabungan fungsi, file, error handling, dan list comprehension.', regexValidator: /def process_file.*try.*with open.*\[.*for.*in/s, tantangan: 'Fungsi process_file gabungkan file handling, error handling, dan list comprehension.', expectedOutput: null }
+      ],
+      3: [
+        { judul: '🏆 Sistem Perpustakaan OOP', penjelasan: '📚 Sistem dengan Class:\n• Class Book (judul, penulis, is_borrowed)\n• Class Library (list books, metode add, borrow, return)', contohKode: 'class Book:\n    def __init__(self, title):\n        self.title = title\n        self.is_borrowed = False\n\nclass Library:\n    def __init__(self):\n        self.books = []', bedahKode: '🏛️ Class & Object\n📦 Composition (Library punya list Book)', regexValidator: /class Book.*class Library.*self\.books\s*=\s*\[\]/s, tantangan: 'Buat class Book dan Library. Library punya metode untuk tambah dan pinjam buku.', expectedOutput: null },
+        { judul: '💪 Banking System OOP', penjelasan: '🏦 Sistem bank dengan enkapsulasi:\n• Class Account dengan __balance (private)\n• Metode deposit, withdraw, get_balance\n• Custom Exception untuk saldo tidak cukup', contohKode: 'class InsufficientFunds(Exception): pass\n\nclass Account:\n    def __init__(self):\n        self.__balance = 0\n    def withdraw(self, amount):\n        if amount > self.__balance:\n            raise InsufficientFunds()', bedahKode: '🔒 __balance: private\n🚫 raise custom exception', regexValidator: /class \w+\(Exception\).*class \w+:.*self\.__balance.*raise/s, tantangan: 'Buat class Account dengan __balance private dan metode withdraw yang raise exception jika saldo kurang.', expectedOutput: null },
+        { judul: '🚀 Shape Calculator', penjelasan: '📐 Menggunakan Inheritance dan Polymorphism:\n• Class Shape (abstract) dengan metode area()\n• Class Circle dan Rectangle yang implementasikan area()', contohKode: 'from abc import ABC, abstractmethod\nimport math\n\nclass Shape(ABC):\n    @abstractmethod\n    def area(self): pass\n\nclass Circle(Shape):\n    def __init__(self, r): self.r = r\n    def area(self): return math.pi * self.r ** 2', bedahKode: '📐 ABC & @abstractmethod\n🔄 Polymorphism: semua class punya area()', regexValidator: /from abc import.*class \w+\(ABC\).*@abstractmethod.*def area/s, tantangan: 'Buat abstract class Shape dengan metode area(), dan class Circle yang mengimplementasikannya.', expectedOutput: null },
+        { judul: '🎯 Review Bulan 3', penjelasan: '📊 Review OOP:\n• Class & Object\n• Inheritance & Polymorphism\n• Encapsulation\n• Magic Methods', contohKode: 'class Employee:\n    def __init__(self, name):\n        self.name = name\n    def __str__(self):\n        return f"Employee: {self.name}"', bedahKode: '🏛️ Gabungan __init__ dan __str__ untuk representasi objek yang baik.', regexValidator: /class Employee.*def __init__.*def __str__/s, tantangan: 'Buat class Employee dengan __init__ dan __str__ yang return string deskriptif.', expectedOutput: null }
+      ],
+      4: [
+        { judul: '🏆 API Wrapper dengan Decorator', penjelasan: '🌐 Wrapper yang log waktu eksekusi:\n• Decorator @log_time\n• Fungsi fetch_data yang sleep simulasi\n• Return hasil', contohKode: 'import time\n\ndef log_time(func):\n    def wrapper(*args, **kwargs):\n        start = time.time()\n        result = func(*args, **kwargs)\n        print(f"Time: {time.time() - start}")\n        return result\n    return wrapper', bedahKode: '🎀 Decorator pattern\n⏱️ time.time() untuk ukur durasi', regexValidator: /def \w+\(func\):.*def wrapper.*time\.time\(\)/s, tantangan: 'Buat decorator @log_time yang print durasi eksekusi fungsi yang dibungkusnya.', expectedOutput: null },
+        { judul: '💪 Data Pipeline Generator', penjelasan: '⚡ Proses data besar dengan generator:\n• Generator yang yield data baris demi baris\n• Filter dan transformasi dalam loop', contohKode: 'def read_large_file(file):\n    for line in file:\n        yield line.strip()\n\n# Penggunaan:\n# for line in read_large_file(f): process(line)', bedahKode: '⚡ yield: hemat memori\n🔄 Lazy evaluation', regexValidator: /def \w+.*for.*in.*yield/s, tantangan: 'Buat generator function yang yield item dari sebuah iterable satu per satu.', expectedOutput: null },
+        { judul: '🚀 Context Manager DB', penjelasan: '🔒 Context manager untuk koneksi database:\n• __enter__: connect\n• __exit__: close\n• Gunakan dengan with', contohKode: 'class DBConnection:\n    def __enter__(self):\n        self.conn = "Connected"\n        return self.conn\n    def __exit__(self, *args):\n        print("Closed")', bedahKode: '🔒 __enter__ dan __exit__\n🛡️ Pastikan cleanup terjadi', regexValidator: /class \w+:.*def __enter__.*def __exit__/s, tantangan: 'Buat class context manager dengan __enter__ dan __exit__ untuk simulasi koneksi.', expectedOutput: null },
+        { judul: '🎯 Review Bulan 4', penjelasan: '📊 Review Python Lanjutan:\n• Decorators\n• Generators\n• Context Managers\n• Type Hinting', contohKode: 'from typing import List\n\ndef process(items: List[int]) -> int:\n    return sum(items)', bedahKode: '📝 Type hinting untuk keterbacaan dan maintenance.', regexValidator: /from typing import List.*def \w+\(.*: List\[int\].*-> int:/s, tantangan: 'Buat fungsi dengan type hinting parameter List[int] dan return type int.', expectedOutput: null }
+      ],
+      5: [
+        { judul: '🏆 Weather API App', penjelasan: '🌦️ Aplikasi cuaca CLI:\n• Input kota\n• Requests ke API (simulasi atau real)\n• Parse JSON\n• Tampilkan suhu', contohKode: 'import requests\n\ndef get_weather(city):\n    res = requests.get(f"https://api.example.com/weather?q={city}")\n    return res.json().get("temp", "N/A")', bedahKode: '🌐 requests.get\n📦 .json() parsing\n🛡️ .get() untuk aman', regexValidator: /import requests.*requests\.get.*\.json\(\)/s, tantangan: 'Buat fungsi get_weather(city) yang gunakan requests.get dan return data dari .json().', expectedOutput: null },
+        { judul: '💪 CSV Data Analyzer', penjelasan: '📊 Analisis data CSV sederhana:\n• Baca file CSV (simulasi string)\n• Gunakan csv module atau split\n• Hitung rata-rata kolom', contohKode: 'import csv\nfrom io import StringIO\n\ndata = "name,age\\nBudi,25\\nAni,30"\nreader = csv.DictReader(StringIO(data))\nfor row in reader:\n    print(row["age"])', bedahKode: '📊 csv.DictReader: mudah akses per kolom\n📦 StringIO: simulasi file dari string', regexValidator: /import csv.*csv\.DictReader/s, tantangan: 'Gunakan csv.DictReader untuk parse data CSV string dan print kolom tertentu.', expectedOutput: null },
+        { judul: '🚀 Web Scraper Sederhana', penjelasan: '🕷️ Ambil data dari HTML:\n• String HTML dummy\n• BeautifulSoup find_all\n• Ekstrak teks', contohKode: 'from bs4 import BeautifulSoup\n\nhtml = "<ul><li>Item 1</li><li>Item 2</li></ul>"\nsoup = BeautifulSoup(html, "html.parser")\nitems = [li.text for li in soup.find_all("li")]', bedahKode: '🕷️ BeautifulSoup: parse HTML\n🔍 .find_all(): ambil semua match', regexValidator: /from bs4 import BeautifulSoup.*BeautifulSoup\(.*\.find_all\(/s, tantangan: 'Gunakan BeautifulSoup untuk find_all "li" dari string HTML dan ekstrak teksnya ke list.', expectedOutput: null },
+        { judul: '🎯 Review Bulan 5', penjelasan: '📊 Review Data & Web:\n• Requests\n• JSON\n• Pandas Dasar\n• SQLite', contohKode: 'import sqlite3\nconn = sqlite3.connect(":memory:")\nconn.execute("CREATE TABLE t (id INT)")\nconn.commit()', bedahKode: '🗄️ SQLite in-memory untuk testing cepat.', regexValidator: /import sqlite3.*sqlite3\.connect.*execute.*CREATE TABLE/s, tantangan: 'Buat koneksi SQLite in-memory, buat tabel, dan commit.', expectedOutput: null }
+      ],
+      6: [
+        { judul: '🏆 REST API dengan FastAPI', penjelasan: '🚀 API lengkap:\n• GET /items (list)\n• POST /items (tambah)\n• Pydantic model untuk validasi', contohKode: 'from fastapi import FastAPI\nfrom pydantic import BaseModel\n\napp = FastAPI()\n\nclass Item(BaseModel):\n    name: str\n\nitems = []\n\n@app.post("/items")\ndef create_item(item: Item):\n    items.append(item)\n    return item', bedahKode: '🚀 FastAPI instance\n📦 Pydantic BaseModel\n🗺️ @app.post route', regexValidator: /from fastapi import FastAPI.*class \w+\(BaseModel\).*@app\.post/s, tantangan: 'Buat app FastAPI dengan Pydantic model Item dan route POST untuk menambahkannya ke list.', expectedOutput: null },
+        { judul: '💪 CRUD Database API', penjelasan: '🗄️ API yang terhubung ke SQLite:\n• GET /users: ambil semua\n• POST /users: insert\n• Gunakan fungsi get_db()', contohKode: 'import sqlite3\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\ndef get_db():\n    return sqlite3.connect("test.db")\n\n@app.get("/users")\ndef get_users():\n    return {"status": "ok"}', bedahKode: '🗄️ get_db: helper koneksi\n🗺️ Route yang gunakan DB', regexValidator: /def get_db\(\):.*sqlite3\.connect.*@app\.get/s, tantangan: 'Buat fungsi get_db() yang return koneksi sqlite3, dan route GET yang menggunakannya.', expectedOutput: null },
+        { judul: '🚀 Deployment Config', penjelasan: '🚀 Persiapan deploy:\n• requirements.txt\n• .env untuk PORT\n• Dockerfile dasar', contohKode: '# requirements.txt\nfastapi\nuvicorn\n\n# .env\nPORT=8000\n\nimport os\nport = os.getenv("PORT", 8000)', bedahKode: '📦 requirements.txt: dependensi\n🔐 os.getenv: konfigurasi dinamis', regexValidator: /os\.getenv\s*\(\s*["\']PORT["\']/s, tantangan: 'Tulis kode yang ambil PORT dari os.getenv dengan default 8000.', expectedOutput: null },
+        { judul: '🎯 Review Bulan 6', penjelasan: '📊 Review Framework & Deploy:\n• FastAPI\n• Pydantic\n• Database\n• Deployment', contohKode: 'from fastapi import FastAPI\napp = FastAPI()\n\n@app.get("/")\ndef root():\n    return {"message": "Ready to deploy"}', bedahKode: '🚀 Aplikasi minimal yang siap di-deploy.', regexValidator: /from fastapi import FastAPI.*@app\.get\s*\(\s*["\']\/["\']\s*\)/s, tantangan: 'Buat struktur aplikasi FastAPI minimal dengan route root yang return pesan sukses.', expectedOutput: null }
+      ]
+    };
+
+    /* =========================================
+       8. GENERATOR JADWAL & VARIASI
+       ========================================= */
+    const generateScheduleData = () => {
+      const schedule = [];
+      for (let m = 1; m <= 6; m++) {
+        // Hari 1-10: Materi inti
+        for (let i = 0; i < 10; i++) {
+          const dayNum = i + 1;
+          const currentDate = new Date(appState.startDate);
+          currentDate.setDate(appState.startDate.getDate() + (m-1)*30 + i);
+          const topic = coreMaterials[m][i];
+          schedule.push({
+            id: `${m}-${dayNum}`, month: m, dayNum, type: 'core',
+            date: currentDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }),
+            judul: `Day ${dayNum}: ${topic.judul}`,
+            penjelasan: topic.penjelasan, contohKode: topic.contohKode, bedahKode: topic.bedahKode,
+            tantangan: `Latihan: Implementasi konsep "${topic.judul}". Buat kode sederhana yang mendemonstrasikan pemahamanmu.`,
+            regexValidator: /.+/, linkW3: topic.linkW3, isFinalTest: false
+          });
+        }
+        // Hari 11-17: Studi Kasus
+        for (let i = 0; i < 7; i++) {
+          const dayNum = i + 11;
+          const currentDate = new Date(appState.startDate);
+          currentDate.setDate(appState.startDate.getDate() + (m-1)*30 + i + 10);
+          const sc = studyCasesByMonth[m][i];
+          schedule.push({
+            id: `${m}-${dayNum}`, month: m, dayNum, type: 'study',
+            date: currentDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }),
+            judul: `Day ${dayNum}: ${sc.judul}`,
+            penjelasan: sc.penjelasan, contohKode: sc.contohKode, bedahKode: sc.bedahKode,
+            tantangan: sc.tantangan, regexValidator: sc.regexValidator, linkW3: sc.linkW3,
+            expectedOutput: sc.expectedOutput, isFinalTest: false
+          });
+        }
+        // Hari 18-26: Latihan Penguatan
+        for (let i = 0; i < 9; i++) {
+          const dayNum = i + 18;
+          const currentDate = new Date(appState.startDate);
+          currentDate.setDate(appState.startDate.getDate() + (m-1)*30 + i + 17);
+          const ex = practiceExercises[m][i];
+          schedule.push({
+            id: `${m}-${dayNum}`, month: m, dayNum, type: 'practice',
+            date: currentDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }),
+            judul: `Day ${dayNum}: ${ex.judul}`,
+            penjelasan: `🎯 ${ex.judul}\n💪 Latihan terukur untuk memperkuat konsep bulan ${m}. Kerjakan dengan teliti!`,
+            contohKode: '# Implementasi konsep bulan ' + m + '\n# Fokus pada target yang diminta',
+            bedahKode: '📝 Review konsep terkait\nIkuti target tantangan\n🎮 Test di Playground jika perlu',
+            tantangan: ex.tantangan, regexValidator: ex.regexValidator, linkW3: 'https://www.w3schools.com/python/',
+            expectedOutput: ex.expectedOutput, isFinalTest: false
+          });
+        }
+        // Hari 27-29: Project Akhir
+        for (let i = 0; i < 3; i++) {
+          const dayNum = i + 27;
+          const currentDate = new Date(appState.startDate);
+          currentDate.setDate(appState.startDate.getDate() + (m-1)*30 + i + 26);
+          const pr = projectFinals[m][i];
+          schedule.push({
+            id: `${m}-${dayNum}`, month: m, dayNum, type: 'project',
+            date: currentDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }),
+            judul: `Day ${dayNum}: ${pr.judul}`,
+            penjelasan: pr.penjelasan, contohKode: pr.contohKode, bedahKode: pr.bedahKode,
+            tantangan: pr.tantangan, regexValidator: pr.regexValidator, linkW3: 'https://www.w3schools.com/python/',
+            expectedOutput: pr.expectedOutput, isFinalTest: true
+          });
+        }
+        // Hari 30: Review
+        const currentDate = new Date(appState.startDate);
+        currentDate.setDate(appState.startDate.getDate() + (m-1)*30 + 29);
+        const review = projectFinals[m][3];
+        schedule.push({
+          id: `${m}-30`, month: m, dayNum: 30, type: 'review',
+          date: currentDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }),
+          judul: `Day 30: ${review.judul}`,
+          penjelasan: review.penjelasan, contohKode: review.contohKode, bedahKode: review.bedahKode,
+          tantangan: review.tantangan, regexValidator: review.regexValidator, linkW3: 'https://www.w3schools.com/python/',
+          expectedOutput: review.expectedOutput, isFinalTest: false
+        });
+      }
+      return schedule;
+    };
+    const scheduleData = generateScheduleData();
+
+    const generateVariations = (baseTopic, dayNum, month) => {
+      const variations = [];
+      const templates = {
+        'print': [
+          { tantangan: 'Tampilkan "Halo, Dunia!" di console.', regex: /print\s*\(\s*["']Halo, Dunia!["']\s*\)/, expected: 'Halo, Dunia!' },
+          { tantangan: 'Tampilkan "Selamat belajar Python" di console.', regex: /print\s*\(\s*["']Selamat belajar Python["']\s*\)/, expected: 'Selamat belajar Python' },
+          { tantangan: 'Tampilkan nama kamu di console.', regex: /print\s*\(\s*["'][^"']+["']\s*\)/, expected: null },
+          { tantangan: 'Tampilkan angka 42 di console.', regex: /print\s*\(\s*42\s*\)/, expected: '42' },
+          { tantangan: 'Tampilkan 2 pesan berbeda.', regex: /print\(.*\).*\n.*print\(/s, expected: null }
+        ],
+        'tipe-data': [
+          { tantangan: 'Buat variabel "nama" berisi teks dan "umur" berisi angka.', regex: /nama\s*=\s*["'][^"']+["'].*\n.*umur\s*=\s*\d+/s, expected: null },
+          { tantangan: 'Buat "kota" = "Jakarta" dan "populasi" = 10000000.', regex: /kota\s*=\s*["']Jakarta["'].*\n.*populasi\s*=\s*10000000/s, expected: null },
+          { tantangan: 'Buat "buah" = "Apel" dan "harga" = 5000, print keduanya.', regex: /buah\s*=\s*["']Apel["'].*\n.*harga\s*=\s*5000.*print/s, expected: null },
+          { tantangan: 'Buat 3 variabel: nama (str), umur (int), aktif (bool).', regex: /nama\s*=\s*["'][^"']+["'].*\n.*umur\s*=\s*\d+.*\n.*aktif\s*=\s*(True|False)/s, expected: null },
+          { tantangan: 'Gabungkan "Umur saya " dengan angka 20 menggunakan f-string.', regex: /f["']Umur saya \{20\}["']|f["']Umur saya \{\w+\}["']/s, expected: 'Umur saya 20' }
+        ],
+        'default': [
+          { tantangan: `Latihan ${dayNum}: Buat kode yang demonstrasikan konsep hari ini.`, regex: /.+/, expected: null },
+          { tantangan: `Variasi 2: Gabungkan 2 konsep berbeda.`, regex: /.+/, expected: null },
+          { tantangan: `Variasi 3: Buat fungsi sederhana dengan def dan panggil.`, regex: /def\s+\w+\s*\(.*\):.*\n\s+.+/s, expected: null },
+          { tantangan: `Variasi 4: Gunakan list comprehension atau for loop.`, regex: /for .* in .*:| \[.*for .* in .*\]/s, expected: null },
+          { tantangan: `Variasi 5: Buat dictionary dan akses propertinya.`, regex: /\w+\s*=\s*\{[^}]+\}.*\n.*\w+\[\s*["'][^"']+["']\s*\]/s, expected: null }
+        ]
+      };
+      let topicKey = 'default';
+      const judul = baseTopic.judul.toLowerCase();
+      if (judul.includes('print') || judul.includes('pengenalan')) topicKey = 'print';
+      else if (judul.includes('tipe data') || judul.includes('variabel')) topicKey = 'tipe-data';
+      
+      const selectedTemplate = templates[topicKey] || templates['default'];
+      for (let i = 0; i < MAX_VARIATIONS; i++) {
+        const v = selectedTemplate[i % selectedTemplate.length];
+        variations.push({
+          ...baseTopic,
+          tantangan: v.tantangan,
+          regexValidator: v.regex,
+          expectedOutput: v.expected,
+          variationIndex: i
+        });
+      }
+      return variations;
+    };
+
+    /* =========================================
+       9. DOM REFERENCES & INITIALIZATION
+       ========================================= */
+    const dom = {
+      sidebar: document.getElementById('sidebar'),
+      mobileBtn: document.getElementById('mobileMenuBtn'),
+      navItems: document.querySelectorAll('.nav-item'),
+      views: document.querySelectorAll('.view'),
+      modal: document.getElementById('learnModal'),
+      modalContent: document.getElementById('modalContent'),
+      closeModalBtn: document.getElementById('closeModal'),
+      learningMap: document.getElementById('learningMap'),
+      scheduleContainer: document.getElementById('scheduleContainer'),
+      notesGrid: document.getElementById('notesGrid'),
+      musicWidget: document.getElementById('musicWidget'),
+      statCompleted: document.getElementById('statCompleted'),
+      statNotes: document.getElementById('statNotes'),
+      statRank: document.getElementById('statRank'),
+      statStreak: document.getElementById('statStreak'),
+      progressChart: document.getElementById('progressChart'),
+      heatmapContainer: document.getElementById('heatmapContainer')
+    };
+
+    function initApp() {
+      loadStateFromStorage();
+      rotateVariationsOnRefresh();
+      renderLearningMap();
+      updateStats();
+      renderScheduleView(appState.selectedMonth);
+      setupNavigation();
+      renderMusicWidget();
+      renderCharts();
+      setupPlayground();
+      
+      dom.mobileBtn.addEventListener('click', () => dom.sidebar.classList.toggle('open'));
+      dom.closeModalBtn.addEventListener('click', closeLearningModal);
+      dom.modal.addEventListener('click', (e) => { if (e.target === dom.modal) closeLearningModal(); });
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLearningModal();
+      });
+    }
+
+    function setupPlayground() {
+  const runBtn = document.getElementById('runPlayground');
+  const clearBtn = document.getElementById('clearPlayground');
+  const editor = document.getElementById('playgroundEditor');
+  const outputDiv = document.getElementById('playgroundOutputContent');
+
+  runBtn.addEventListener('click', async () => {
+    const code = editor.value.trim();
+    outputDiv.innerHTML = '';
+
+    if (!code) {
+      outputDiv.innerHTML = '<div class="output-line" style="color: var(--text-muted);">⚠️ Silakan tulis kode terlebih dahulu.</div>';
+      return;
+    }
+
+    if (!window.pyodideReady) {
+      outputDiv.innerHTML = '<div class="output-line" style="color: var(--py-yellow);">⚠️ Python sedang dimuat, tunggu sebentar...</div>';
+      return;
+    }
+
+    runBtn.disabled = true;
+    runBtn.textContent = '⏳ Menjalankan...';
+
+    try {
+      // Redirect stdout/stderr Python
+      window.pyodideInstance.runPython(`
+        import sys
+        from io import StringIO
+        sys.stdout = StringIO()
+        sys.stderr = StringIO()
+      `);
+
+      // Jalankan kode user
+      window.pyodideInstance.runPython(code);
+
+      // Ambil output
+      const stdout = window.pyodideInstance.runPython('sys.stdout.getvalue()');
+      const stderr = window.pyodideInstance.runPython('sys.stderr.getvalue()');
+
+      outputDiv.innerHTML = '';
+
+      if (stdout) {
+        stdout.split('\n').forEach(line => { // FIXED: split('\n') yang benar
+          if (line) outputDiv.innerHTML += `<div class="output-line">${escapeHtml(line)}</div>`;
+        });
+      }
+
+      if (stderr) {
+        stderr.split('\n').forEach(line => {
+          if (line) outputDiv.innerHTML += `<div class="output-line error">❌ ${escapeHtml(line)}</div>`;
+        });
+      }
+
+      if (!stdout && !stderr) {
+        outputDiv.innerHTML = '<div class="output-line" style="color: var(--text-muted);">✅ Kode berjalan (tidak ada output)</div>';
+      }
+    } catch (error) {
+      outputDiv.innerHTML = `<div class="output-line error">❌ Error: ${escapeHtml(error.message)}</div>`;
+    } finally {
+      runBtn.disabled = false;
+      runBtn.textContent = '▶️ Jalankan Kode';
+    }
+  });
+
+  clearBtn.addEventListener('click', () => {
+    editor.value = '';
+    outputDiv.innerHTML = '';
+  });
+}
+
+    function rotateVariationsOnRefresh() {
+      Object.keys(appState.dayVariationIndex).forEach(dayId => {
+        appState.dayVariationIndex[dayId] = ((appState.dayVariationIndex[dayId] || 0) + 1) % MAX_VARIATIONS;
+      });
+      saveStateToStorage();
+    }
+
+    function setupNavigation() {
+      dom.navItems.forEach(item => {
+        item.addEventListener('click', () => {
+          switchView(item.dataset.target);
+          dom.sidebar.classList.remove('open');
+        });
+      });
+    }
+
+    function switchView(viewName) {
+      dom.navItems.forEach(n => n.classList.toggle('active', n.dataset.target === viewName));
+      dom.views.forEach(v => v.classList.toggle('active', v.id === `view-${viewName}`));
+      appState.currentView = viewName;
+      
+      if (viewName === 'notes') renderNotes();
+      if (viewName === 'dashboard') { renderLearningMap(); updateStats(); renderCharts(); }
+      if (viewName === 'schedule') renderScheduleView(appState.selectedMonth);
+    }
+
+    function renderLearningMap() {
+      dom.learningMap.innerHTML = '';
+      monthThemes.forEach((theme, idx) => {
+        const isActive = idx + 1 === appState.selectedMonth;
+        const node = document.createElement('div');
+        node.className = `map-node ${isActive ? 'active-month' : ''}`;
+        node.innerHTML = `<div class="icon">${theme.icon}</div><div class="label">${theme.name}</div>`;
+        node.title = theme.desc;
+        node.onclick = () => { appState.selectedMonth = idx + 1; renderLearningMap(); switchView('schedule'); };
+        dom.learningMap.appendChild(node);
+        
+        if (idx < 5) {
+          const connector = document.createElement('div');
+          connector.className = 'map-connector';
+          dom.learningMap.appendChild(connector);
+        }
+      });
+    }
+
+    function updateStats() {
+      const totalDays = 180;
+      const completedCount = Object.keys(appState.completedDays).length;
+      const percent = Math.round((completedCount / totalDays) * 100);
+      const notesCount = Object.keys(appState.dayNotes).filter(k => appState.dayNotes[k].trim()).length;
+      const streak = calculateStreak();
+      
+      dom.statCompleted.textContent = `${percent}%`;
+      dom.statNotes.textContent = notesCount;
+      dom.statStreak.textContent = `${streak} 🔥`;
+      
+      let rank = 'Newbie 🌱';
+      if (percent >= 90) rank = 'Python Wizard 🧙‍♂️';
+      else if (percent >= 70) rank = 'Senior Dev 🚀';
+      else if (percent >= 40) rank = 'Intermediate 💡';
+      else if (percent >= 15) rank = 'Apprentice 📚';
+      
+      dom.statRank.textContent = rank;
+    }
+
+    function calculateStreak() {
+      let streak = 0;
+      const today = new Date();
+      for (let i = 0; i < 180; i++) {
+        const checkDate = new Date(today);
+        checkDate.setDate(today.getDate() - i);
+        const dateStr = checkDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
+        const dayData = scheduleData.find(d => d.date === dateStr);
+        
+        if (dayData && appState.completedDays[dayData.id]) {
+          streak++;
+        } else if (i > 0) {
+          break;
+        }
+      }
+      return streak;
+    }
+
+    function renderCharts() {
+      renderProgressChart();
+      renderHeatmap();
+    }
+
+    function renderProgressChart() {
+      const canvas = dom.progressChart;
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      
+      canvas.width = rect.width * dpr; 
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      
+      const width = rect.width, height = rect.height;
+      const padding = { top: 20, right: 20, bottom: 40, left: 40 };
+      const chartWidth = width - padding.left - padding.right;
+      const chartHeight = height - padding.top - padding.bottom;
+      
+      ctx.clearRect(0, 0, width, height);
+      
+      const monthlyProgress = [];
+      for (let m = 1; m <= 6; m++) {
+        const monthDays = scheduleData.filter(d => d.month === m);
+        const completed = monthDays.filter(d => appState.completedDays[d.id]).length;
+        monthlyProgress.push({ month: m, completed, total: monthDays.length });
+      }
+      
+      const barWidth = chartWidth / 6 * 0.6;
+      monthlyProgress.forEach((data, i) => {
+        const x = padding.left + i * (chartWidth / 6) + (chartWidth / 6 * 0.2);
+        const percent = data.total > 0 ? data.completed / data.total : 0;
+        const barHeight = percent * chartHeight;
+        const y = padding.top + chartHeight - barHeight;
+        
+        const gradient = ctx.createLinearGradient(0, y, 0, y + barHeight);
+        gradient.addColorStop(0, '#3b82f6'); 
+        gradient.addColorStop(1, '#10b981');
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(x, y, barWidth, barHeight);
+        
+        ctx.fillStyle = '#94a3b8'; 
+        ctx.font = '12px system-ui'; 
+        ctx.textAlign = 'center';
+        ctx.fillText(`B${data.month}`, x + barWidth / 2, height - padding.bottom + 20);
+        
+        ctx.fillStyle = '#fbbf24';
+        ctx.fillText(`${Math.round(percent * 100)}%`, x + barWidth / 2, y - 5);
+      });
+      
+      ctx.fillStyle = '#94a3b8'; 
+      ctx.textAlign = 'right';
+      for (let i = 0; i <= 4; i++) {
+        const y = padding.top + (chartHeight / 4) * i;
+        ctx.fillText(`${100 - (i * 25)}%`, padding.left - 5, y + 4);
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)'; 
+        ctx.beginPath(); 
+        ctx.moveTo(padding.left, y); 
+        ctx.lineTo(width - padding.right, y); 
+        ctx.stroke();
+      }
+    }
+
+    function renderHeatmap() {
+      if (!dom.heatmapContainer) return;
+      dom.heatmapContainer.innerHTML = '';
+      
+      for (let m = 1; m <= 6; m++) {
+        const monthLabel = document.createElement('div');
+        monthLabel.className = 'heatmap-label'; 
+        monthLabel.textContent = `B${m}`;
+        dom.heatmapContainer.appendChild(monthLabel);
+        
+        const heatmap = document.createElement('div'); 
+        heatmap.className = 'heatmap';
+        
+        scheduleData.filter(d => d.month === m).forEach(day => {
+          const cell = document.createElement('div'); 
+          cell.className = 'heatmap-cell';
+          
+          if (appState.completedDays[day.id]) cell.classList.add('completed');
+          else if (appState.dayNotes[day.id]?.trim()) cell.classList.add('partial');
+          
+          cell.title = `${day.judul} - ${day.date}`;
+          cell.onclick = () => { 
+            appState.selectedMonth = m; 
+            switchView('schedule'); 
+            setTimeout(() => openLearningModal(day), 100); 
+          };
+          heatmap.appendChild(cell);
+        });
+        dom.heatmapContainer.appendChild(heatmap);
+      }
+    }
+
+    function renderScheduleView(monthId) {
+      dom.scheduleContainer.innerHTML = '';
+      const theme = monthThemes.find(m => m.id === monthId);
+      
+      const header = document.createElement('div');
+      header.className = 'view-header';
+      header.innerHTML = `<h3 class="view-title">${theme.icon} Bulan ${monthId}: ${theme.name}</h3><p class="view-sub">${theme.desc}</p>`;
+      dom.scheduleContainer.appendChild(header);
+      
+      const grid = document.createElement('div'); 
+      grid.className = 'days-grid';
+      
+      scheduleData.filter(d => d.month === monthId).forEach(day => {
+        const isCompleted = appState.completedDays[day.id] === true;
+        const card = document.createElement('div');
+        let typeClass = '', badgeHtml = '';
+        
+        if (day.type === 'core') { typeClass = 'type-core'; badgeHtml = '<span class="day-type-badge badge-core">📚 Materi</span>'; }
+        else if (day.type === 'study') { typeClass = 'type-study'; badgeHtml = '<span class="day-type-badge badge-study">🔬 Studi Kasus</span>'; }
+        else if (day.type === 'practice') { typeClass = 'type-practice'; badgeHtml = '<span class="day-type-badge badge-practice">💪 Latihan</span>'; }
+        else if (day.type === 'project') { typeClass = 'type-project'; badgeHtml = '<span class="day-type-badge badge-project">🏆 Project</span>'; }
+        else if (day.type === 'review') { typeClass = 'type-review'; badgeHtml = '<span class="day-type-badge badge-review">🎯 Review</span>'; }
+        
+        card.className = `day-card ${isCompleted ? 'completed' : ''} ${typeClass}`;
+        card.innerHTML = `<div class="day-num">${day.date}</div><div class="day-topic">${day.judul.replace(`Day ${day.dayNum}: `, '')}</div>${badgeHtml}`;
+        card.onclick = () => openLearningModal(day);
+        grid.appendChild(card);
+      });
+      dom.scheduleContainer.appendChild(grid);
+    }
+
+    function openLearningModal(dayData) {
+      const variationIndex = appState.dayVariationIndex[dayData.id] || 0;
+      const variations = generateVariations(dayData, dayData.dayNum, dayData.month);
+      const currentVariation = variations[variationIndex];
+      
+      dayData._currentVariation = currentVariation;
+      dayData._variations = variations;
+      
+      const isCompleted = appState.completedDays[dayData.id];
+      let typeBadge = '';
+      
+      if (dayData.type === 'study') typeBadge = '<span style="background:rgba(59,130,246,0.15);color:var(--py-blue);padding:2px 8px;border-radius:4px;font-size:0.75rem;margin-left:0.5rem;">🔬 STUDI KASUS</span>';
+      else if (dayData.type === 'practice') typeBadge = '<span style="background:rgba(251,191,36,0.15);color:var(--py-yellow);padding:2px 8px;border-radius:4px;font-size:0.75rem;margin-left:0.5rem;">💪 LATIHAN</span>';
+      else if (dayData.type === 'project') typeBadge = '<span style="background:rgba(244,63,94,0.15);color:var(--rose);padding:2px 8px;border-radius:4px;font-size:0.75rem;margin-left:0.5rem;">🏆 PROJECT</span>';
+      else if (dayData.type === 'review') typeBadge = '<span style="background:rgba(245,158,11,0.15);color:var(--amber);padding:2px 8px;border-radius:4px;font-size:0.75rem;margin-left:0.5rem;">🎯 REVIEW</span>';
+      else typeBadge = '<span style="background:rgba(16,185,129,0.15);color:var(--emerald);padding:2px 8px;border-radius:4px;font-size:0.75rem;margin-left:0.5rem;">📚 MATERI</span>';
+      
+      dom.modalContent.innerHTML = `
+        <div class="step-indicator">
+          <span class="step active">1. Penjelasan</span>
+          <span class="step">2. Contoh</span>
+          <span class="step">3. Tantangan</span>
+          ${isCompleted ? '<span class="step" style="background: var(--emerald); color: #0f172a;">✓ Selesai</span>' : ''}
+        </div>
+        <h3 style="margin-bottom: 0.8rem; color: var(--py-blue);">${dayData.judul} ${typeBadge}</h3>
+        <div class="variation-indicator">
+          ${Array.from({length: MAX_VARIATIONS}).map((_, i) => `<div class="var-dot ${i === variationIndex ? 'active' : ''} ${i < variationIndex ? 'used' : ''}"></div>`).join('')}
+          <span class="var-label">Soal ${variationIndex + 1} dari ${MAX_VARIATIONS}</span>
+        </div>
+        <p class="mentor-text">${dayData.penjelasan}</p>
+        <div style="background: rgba(59,130,246,0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 3px solid var(--py-blue);">
+          <strong style="color: var(--py-blue); display: block; margin-bottom: 0.5rem;">💻 Contoh Kode</strong>
+          <pre class="code-block">${escapeHtml(dayData.contohKode)}</pre>
+          <p class="code-breakdown"><strong>🔍 Bedah Kode:</strong><br>${dayData.bedahKode}</p>
+        </div>
+        <div style="background: rgba(16,185,129,0.05); padding: 1rem; border-radius: 8px; border-left: 3px solid var(--emerald);">
+          <strong style="color: var(--emerald); display: block; margin-bottom: 0.5rem;">🎯 Tantangan</strong>
+          <p style="color: var(--text-main); margin-bottom: 0.5rem; white-space: pre-wrap;">${currentVariation.tantangan}</p>
+          <textarea class="input-area" id="challengeInput" placeholder="Ketik solusi Python-mu di sini..."></textarea>
+          <div class="output-panel" id="outputPanel" style="display: none;">
+            <div class="output-panel-header">📤 Output</div>
+            <div id="outputContent"></div>
+          </div>
+          <textarea class="input-area" id="noteInput" style="height: 60px; margin-top: 0.5rem; background: rgba(255,255,255,0.03);" placeholder="📝 Catatan pribadi...">${escapeHtml(appState.dayNotes[dayData.id] || '')}</textarea>
+          <button class="btn-primary" id="runBtn">✅ Validasi Jawaban</button>
+<button class="btn-change" id="changeBtn" ${variationIndex >= MAX_VARIATIONS - 1 ? 'disabled' : ''}>🔄 Ganti Soal (${MAX_VARIATIONS - variationIndex - 1} sisa)</button>
+<a href="#" onclick="switchView('playground'); closeLearningModal(); return false;" class="btn-change" style="margin-top: 0.5rem; text-align: center; text-decoration: none;">💻 Coba di Playground</a>
+<div class="feedback" id="feedbackMsg"></div>
+        </div>
+<div class="external-links">
+  <a href="${dayData.linkW3}" target="_blank" rel="noopener noreferrer" class="link-btn">🔗 W3Schools Python</a>
+  <a href="https://docs.python.org/3/search.html?q=${encodeURIComponent(dayData.judul.split(': ')[1] || dayData.judul)}" target="_blank" rel="noopener noreferrer" class="link-btn">📚 Python Docs</a>
+  <button type="button" onclick="switchView('playground'); closeLearningModal();" class="btn-change" style="margin-top: 0.8rem;">💻 Coba di Playground</button>
+</div>
+      `;
+      
+      dom.modal.classList.add('open');
+      document.getElementById('runBtn').addEventListener('click', () => validateChallenge(dayData));
+      document.getElementById('changeBtn').addEventListener('click', () => changeVariation(dayData));
+      document.getElementById('noteInput').addEventListener('input', (e) => { 
+        appState.dayNotes[dayData.id] = e.target.value; 
+        saveStateToStorage(); 
+      });
+    }
+
+    function closeLearningModal() { 
+      dom.modal.classList.remove('open'); 
+    }
+
+    function changeVariation(dayData) {
+      const currentIndex = appState.dayVariationIndex[dayData.id] || 0;
+      if (currentIndex < MAX_VARIATIONS - 1) {
+        appState.dayVariationIndex[dayData.id] = currentIndex + 1;
+        saveStateToStorage();
+        openLearningModal(dayData);
+      }
+    }
+
+function validateChallenge(dayData) {
+  const input = document.getElementById('challengeInput').value.trim();
+  const feedback = document.getElementById('feedbackMsg');
+  const runBtn = document.getElementById('runBtn');
+  const currentVariation = dayData._currentVariation;
+  
+  if (!input) {
+    feedback.className = 'feedback error';
+    feedback.textContent = '⚠️ Silakan ketik kode terlebih dahulu.';
+    feedback.style.display = 'block';
+    return;
+  }
+  
+  runBtn.disabled = true;
+  runBtn.textContent = '⏳ Memvalidasi...';
+  
+  setTimeout(() => {
+    runBtn.disabled = false;
+    runBtn.textContent = '🚀 Jalankan & Validasi';
+    
+    // VALIDASI: Cek apakah kode memenuhi requirement (hanya regex)
+    const isValid = currentVariation.regexValidator.test(input);
+    
+    if (isValid) {
+      feedback.className = 'feedback success';
+      feedback.innerHTML = '✅ <strong>Benar!</strong> Kode Anda sudah tepat. Bagus!';
+      feedback.style.display = 'block';
+      
+      // Tandai sebagai completed
+      if (!appState.completedDays[dayData.id]) {
+        appState.completedDays[dayData.id] = true;
+        saveStateToStorage();
+        updateStats();
+        renderScheduleView(appState.selectedMonth);
+        spawnParticles(runBtn);
+      }
+    } else {
+      feedback.className = 'feedback error';
+      feedback.innerHTML = '❌ <strong>Belum tepat.</strong> ' + getRegexHint(currentVariation);
+      feedback.style.display = 'block';
+    }
+  }, 400);
+}
+    function executeCodeWithCapture(code) {
+  // Fungsi ini tidak digunakan lagi untuk validasi
+  // Hanya untuk playground
+  return { success: true, logs: [], result: undefined };
+}
+
+    function analyzeError(errorMsg) {
+      if (errorMsg.includes('Unexpected token')) {
+        if (errorMsg.includes('}')) return '⚠️ <strong>Syntax Error:</strong> Kurung kurawal } tidak seimbang.';
+        if (errorMsg.includes(')')) return '⚠️ <strong>Syntax Error:</strong> Kurung ) tidak seimbang.';
+        return `⚠️ <strong>Syntax Error:</strong> ${errorMsg}`;
+      }
+      if (errorMsg.includes('is not defined')) {
+        const varName = errorMsg.match(/(\w+) is not defined/)?.[1];
+        return `⚠️ <strong>Variabel "${varName}" belum dideklarasikan.</strong> Gunakan variabel dengan benar.`;
+      }
+      return `⚠️ <strong>Error:</strong> ${errorMsg}`;
+    }
+
+    function getRegexHint(variation) {
+      const regex = variation.regexValidator.toString();
+      if (regex.includes('print\\s*\\(')) return '💡 Hint: Gunakan print()';
+      if (regex.includes('def\\s+\\w+')) return '💡 Hint: Deklarasikan fungsi dengan def nama():';
+      if (regex.includes('for .* in .*')) return '💡 Hint: Gunakan for item in sequence:';
+      if (regex.includes('if .*:')) return '💡 Hint: Gunakan if kondisi:';
+      if (regex.includes('class ')) return '💡 Hint: Deklarasikan class dengan class Nama:';
+      if (regex.includes('import ')) return '💡 Hint: Jangan lupa import module yang diperlukan';
+      return '💡 Hint: Cek kembali target yang diminta pada deskripsi tantangan.';
+    }
+
+    function escapeHtml(str) { 
+      const div = document.createElement('div'); 
+      div.textContent = str; 
+      return div.innerHTML; 
+    }
+
+    function spawnParticles(element) {
+      const rect = element.getBoundingClientRect();
+      for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.style.cssText = `position: fixed; left: ${rect.left + rect.width/2}px; top: ${rect.top + rect.height/2}px; width: 5px; height: 5px; border-radius: 50%; background: ${['#fbbf24', '#3b82f6', '#10b981'][i % 3]}; pointer-events: none; z-index: 200; animation: pop 0.6s ease-out forwards;`;
+        const angle = (i / 15) * Math.PI * 2, distance = 30 + Math.random() * 40;
+        particle.style.setProperty('--dx', `${Math.cos(angle) * distance}px`);
+        particle.style.setProperty('--dy', `${Math.sin(angle) * distance}px`);
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 600);
+      }
+    }
+
+    function renderNotes() {
+      dom.notesGrid.innerHTML = '';
+      const entries = Object.entries(appState.dayNotes).filter(([_, note]) => note.trim().length > 0).sort((a, b) => b[0].localeCompare(a[0]));
+      
+      if (entries.length === 0) { 
+        dom.notesGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center; padding: 2rem;">Belum ada catatan.</p>'; 
+        return; 
+      }
+      
+      entries.forEach(([dayId, note]) => {
+        const [month, day] = dayId.split('-');
+        const dayData = scheduleData.find(d => d.id === dayId);
+        const card = document.createElement('div'); 
+        card.className = 'note-card';
+        card.innerHTML = `<div class="note-header"><span>📅 Bulan ${month} Hari ${day}</span><span style="color: var(--text-muted);">${dayData?.date || ''}</span></div><div class="note-body">${escapeHtml(note)}</div>`;
+        dom.notesGrid.appendChild(card);
+      });
+    }
+
+    function renderMusicWidget() {
+      const isExpanded = appState.isMusicExpanded;
+      dom.musicWidget.innerHTML = isExpanded ? `
+        <div class="music-expanded">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <span style="color: var(--text-main); font-weight: 600;">🎵 Fokus Belajar</span>
+            <button id="minMusicBtn" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem;">−</button>
+          </div>
+          <div class="channel-row">
+            ${Object.entries(musicChannels).map(([key, val]) => `<button class="channel-btn ${appState.currentChannel === key ? 'active' : ''}" data-channel="${key}">${val.label}</button>`).join('')}
+          </div>
+          <iframe class="yt-frame" src="https://www.youtube.com/embed/${musicChannels[appState.currentChannel].id}?autoplay=0&mute=0&controls=1" title="Music Player" frameborder="0" allowfullscreen loading="lazy"></iframe>
+        </div>
+      ` : `<div class="music-minimized" id="expMusicBtn">🎧</div>`;
+      
+      if (isExpanded) {
+        document.getElementById('minMusicBtn').addEventListener('click', () => { appState.isMusicExpanded = false; renderMusicWidget(); });
+        document.querySelectorAll('.channel-btn').forEach(btn => btn.addEventListener('click', () => { appState.currentChannel = btn.dataset.channel; renderMusicWidget(); }));
+      } else {
+        document.getElementById('expMusicBtn').addEventListener('click', () => { appState.isMusicExpanded = true; renderMusicWidget(); });
+      }
+    }
+
+    function saveStateToStorage() {
+      try {
+        localStorage.setItem('pythonMasteryConsole', JSON.stringify({
+          completedDays: appState.completedDays,
+          dayNotes: appState.dayNotes,
+          dayVariationIndex: appState.dayVariationIndex,
+          dayAttempts: appState.dayAttempts,
+          currentChannel: appState.currentChannel,
+          theme: appState.theme
+        }));
+      } catch (error) { 
+        console.warn('Gagal simpan:', error); 
+      }
+    }
+
+    function loadStateFromStorage() {
+      try {
+        const saved = localStorage.getItem('pythonMasteryConsole');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          appState.completedDays = parsed.completedDays || {};
+          appState.dayNotes = parsed.dayNotes || {};
+          appState.dayVariationIndex = parsed.dayVariationIndex || {};
+          appState.dayAttempts = parsed.dayAttempts || {};
+          appState.currentChannel = parsed.currentChannel || 'lofi';
+          appState.theme = parsed.theme || 'dark';
+          document.documentElement.setAttribute('data-theme', appState.theme);
+        }
+      } catch (error) { 
+        console.warn('Gagal load:', error); 
+      }
+    }
+
+    // Initialize Application
+    document.addEventListener('DOMContentLoaded', initApp);
+    window.addEventListener('resize', () => { 
+      if (appState.currentView === 'dashboard') renderCharts(); 
+    });
+    // Fallback jika Pyodide gagal load setelah 15 detik
+// Fallback jika Pyodide gagal load setelah 15 detik
+// (Hapus seluruh blok setTimeout fallback di atas)
+// Kita pakai Python asli via Pyodide, bukan simulator JS.
+  </script>
+</body>
+</html>
